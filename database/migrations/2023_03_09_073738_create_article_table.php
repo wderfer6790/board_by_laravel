@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRepliesTable extends Migration
+class CreateArticleTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateRepliesTable extends Migration
      */
     public function up()
     {
-        Schema::create('reply', function (Blueprint $table) {
+        Schema::create('article', function (Blueprint $table) {
             $table->id();
-            $table->integer('article_id');
-            $table->integer('parent_id')->nullable();
             $table->integer('user_id');
-            $table->text('reply');
-            $table->integer('file_id')->nullable();
+            $table->string('subject', 128);
+            $table->text('content');
+            $table->integer('view')->default(0);
+            $table->integer('like')->default(0);
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ class CreateRepliesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('replies');
+        Schema::dropIfExists('article');
     }
 }

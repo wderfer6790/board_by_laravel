@@ -12,20 +12,24 @@ class Article extends Model
     protected $table = 'article';
 
     protected $fillable = [
-        'user_id', 'subject', 'content', 'file', 'views', 'create_at', 'update_at'
+        'user_id', 'subject', 'content', 'view', 'like', 'create_at', 'update_at'
     ];
 
     protected $dateFormat = 'Y-m-d H:i:s';
+
+    protected $casts = [
+        'updated_at' => 'datetime:Y-m-d',
+    ];
 
     public function user() {
         return $this->belongsTo('App\Models\User', 'user_id', 'id');
     }
 
-    public function reply() {
+    public function replies() {
         return $this->hasMany('App\Models\Reply', 'article_id', 'id');
     }
 
-    public function file() {
-        return $this->hasOne('App\Models\File', 'id', 'file_id');
+    public function files() {
+        return $this->morphToMany(File::class, 'fileable', 'fileable');
     }
 }

@@ -23,6 +23,11 @@ class User extends Authenticatable
     protected $dateFormat = 'Y-m-d H:i:s';
 
     public function article() {
-        return $this->hasMany('App\Models\Article', 'user_id', 'id');
+        return $this->hasMany('App\Models\Article', 'user_id');
     }
+
+    public function file() {
+        return $this->morphToMany(File::class, 'fileable', 'fileable');
+    }
+
 }

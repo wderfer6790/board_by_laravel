@@ -1,13 +1,14 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <script src="{{ asset('js/app.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}"
     @yield('loadScript')
-    @yield('style')
+    @yield('headStyle')
 </head>
-<body class="bg-light">
+<body>
 <div class="container bg-light">
     <!-- nav -->
     <div class="row d-none d-md-block d-sm-none">
@@ -16,7 +17,7 @@
                 <a class="navbar-brand link-light fw-bold" href="#">H S P</a>
             </div>
 
-            <div class="offset-1 col-2 dropdown text-left">
+            <div class="offset-8 col-2 dropdown text-left">
                 <a href="#" id="user_btn" class="link-dark" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="{{ asset('storage/image/etc/dog.png') }}" width="50" height="50" class="rounded-circle">
                 </a>
@@ -39,12 +40,8 @@
                 <a class="navbar-brand link-light fw-bold" href="#">H S P</a>
             </div>
 
-            <form class="offset-1 col-6" role="search">
-                <input type="search" class="form-control" placeholder="Search" aria-label="Search">
-            </form>
-            <div class="offset-1 col-2 dropdown text-left">
-                <a href="#" id="user_btn" class="link-dark" data-bs-toggle="collapse" data-bs-target="#mobile-menu"
-                   aria-expanded="false" aria-controls="#mobile-menu">
+            <div class="offset-8 col-2 dropdown text-left">
+                <a href="#" id="user_btn" class="link-dark" data-bs-toggle="collapse" data-bs-target="#mobile-menu" aria-expanded="false" aria-controls="#mobile-menu">
                     <img src="{{ asset('storage/image/etc/dog.png') }}" width="50" height="50" class="rounded-circle">
                 </a>
             </div>
@@ -62,7 +59,7 @@
 
     @yield('content')
 
-    <hr style="margin-top: 10rem;">
+    <hr style="margin-top: 20rem;">
     <div class="row mt-5 mb-4">
         <div class="col">
             <p class="text-center text-dark">@created by Park Hyeon Soo</p>

@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\{AuthController, BoardController, ReplyController};
+use App\Http\Controllers\{AuthController, BoardController, ReplyController, FileController};
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +34,7 @@ Route::group([
 ], function() {
     // article
     Route::get('/', [BoardController::class, 'list'])->name('list');
-    Route::post('/', [BoardController::class, 'getArticles'])->name('getArticles');
+    Route::get('/search', [BoardController::class, 'getArticles'])->name('getArticles');
 
     Route::get('/create', [BoardController::class, 'create'])->name('create');
     Route::post('/create', [BoardController::class, 'store'])->name('store');
@@ -52,3 +52,11 @@ Route::group([
     Route::delete('/reply/{id}', [ReplyController::class, 'store'])->name('replyDestroy')->name('replyDestroy');
 });
 
+// file
+Route::group([
+
+], function() {
+    Route::get('/file', [FileController::class, 'download'])->name('download');
+    Route::post('/file', [FileController::class, 'upload'])->name('upload');
+    Route::delete('/file', [FileController::class, 'delete'])->name('delete');
+});

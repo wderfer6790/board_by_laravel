@@ -9,19 +9,27 @@ class File extends Model
 {
     use HasFactory;
 
+    const CREATED_AT = 'uploaded_at';
+
+    const UPDATED_AT = null;
+
     protected $table = 'file';
 
     protected $fillable = [
-        'files', 'create_at'
+        'name', 'path', 'mime'
     ];
 
     protected $dateFormat = 'Y-m-d H:i:s';
 
-    public function article() {
-        return $this->hasOne('App\Models\Article', 'file_id', 'id');
+    public function users() {
+        return $this->morphedByMany(User::class, 'fileable', 'fileable');
     }
 
-    public function reply() {
-        return $this->hasOne('App\Models\Reply', 'file_id', 'id');
+    public function articles() {
+        return $this->morphedByMany(Article::class, 'fileable', 'fileable');
+    }
+
+    public function replies() {
+        return $this->morphedByMany(Reply::class, 'fileable', 'fileable');
     }
 }
