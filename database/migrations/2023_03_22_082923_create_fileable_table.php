@@ -14,9 +14,10 @@ class CreateFileableTable extends Migration
     public function up()
     {
         Schema::create('fileable', function (Blueprint $table) {
-            $table->id();
-            $table->string('fileable_type', 16);
-            $table->integer('fileable_id');
+            $table->foreignIdFor(App\Models\File::class);
+            $table->unsignedBigInteger('fileable_id');
+            $table->string('fileable_type', 64);
+            $table->unique(['file_id', 'fileable_id', 'fileable_type']);
         });
     }
 

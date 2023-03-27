@@ -1,10 +1,8 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Exception;
 
-use Exception;
-
-class DatabaseFactoriesException extends Exception
+class DatabaseFactoriesException extends \Exception
 {
 
 }

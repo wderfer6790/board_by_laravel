@@ -16,21 +16,36 @@ class ArticleFactory extends Factory
      */
     public function definition()
     {
-        $user = User::inRandomOrder()->first();
-        if(!$user) {
+        $userId = User::take(1)->inRandomOrder()->value('id');
+        if(!$userId) {
             throw new Exception\DatabaseFactoriesException('user not found');
         }
 
         $updated_at = $this->faker->date("Y-m-d H:i:s");
         $views = $this->faker->numberBetween(0, 9999);
         return [
-            'user_id' => $user->id,
+            'user_id' => $userId,
             'subject' => $this->faker->text(64),
             'content' => $this->faker->text(1024),
-            'like' => $this->faker->numberBetween(0, $views),
-            'view' => $views,
+            'views' => $views,
+            'likes' => $this->faker->numberBetween(0, $views),
             'created_at' => $this->faker->date("Y-m-d H:i:s", $updated_at),
             'updated_at' => $updated_at,
         ];
     }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (Article $article) {
+            if (File::count() > 0 && random_int(0, 100) < 90) {
+                $fileId = File::take(1)->inRandomOrder()->value('id');
+                if (!$fileId) {
+                    throw new Exception\DatabaseFactoriesException('user profile image not found');
+                }
+                $article->files()->attach($fileId);
+            }
+        });
+    }
+
+
 }

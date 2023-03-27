@@ -15,11 +15,11 @@ class CreateArticleTable extends Migration
     {
         Schema::create('article', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->foreignIdFor(App\Models\User::class);
             $table->string('subject', 128);
             $table->text('content');
-            $table->integer('view')->default(0);
-            $table->integer('like')->default(0);
+            $table->integer('views')->default(0);
+            $table->integer('likes')->default(0);
             $table->timestamps();
         });
     }

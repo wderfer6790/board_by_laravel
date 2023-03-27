@@ -4,22 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\{User, Article, Reply, File};
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\{File as FileInfo, Storage};
 
 class BoardController extends Controller
 {
     public function list()
     {
-        dd(User::with("article:id, user_id")
-            ->orderBy('id')
-            ->get()->toArray());
+        $dir = Storage::disk('public');
 
-        dd(Article::selectRaw("CONCAT(user_id, '_', id) as idx, id")
-            ->orderBy('idx')
-            ->pluck('id', 'idx')->toArray());
+        $image = collect($dir->Files('image/sample'))->random();
 
-        dd(Article::selectRaw('user_id, COUNT(*) article_cnt')
-            ->groupBy('user_id')->get()->toArray());
+        $article = Article::find(5);
+
+        dd(
+            $article,
+            $article->files
+        );
+
+
+
         return view('list');
     }
 

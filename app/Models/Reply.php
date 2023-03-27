@@ -20,4 +20,16 @@ class Reply extends Model
     public function article() {
         return $this->belongsTo('App\Models\Article', 'article_id', 'id');
     }
+
+    public function file() {
+        return $this->morphToMany(File::class, 'fileable', 'fileable');
+    }
+/*
+    public function parent() {
+        return $this->hasMany(Reply::class, 'parent_id', 'id');
+    }
+
+    public function child() {
+        return $this->belongsTo(Reply::class, 'id', 'parent_id');
+    }*/
 }

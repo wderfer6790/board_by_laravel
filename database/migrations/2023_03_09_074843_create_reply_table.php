@@ -15,9 +15,9 @@ class CreateReplyTable extends Migration
     {
         Schema::create('reply', function (Blueprint $table) {
             $table->id();
-            $table->integer('article_id');
-            $table->integer('parent_id')->nullable();
-            $table->integer('user_id');
+            $table->foreignIdFor(App\Models\Article::class);
+            $table->foreignIdFor(App\Models\Reply::class, 'parent_id')->nullable();
+            $table->foreignIdFor(App\Models\User::class);
             $table->text('content');
             $table->timestamps();
         });
