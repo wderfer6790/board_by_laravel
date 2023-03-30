@@ -18,18 +18,23 @@ class Reply extends Model
     protected $dateFormat = 'Y-m-d H:i:s';
 
     public function article() {
-        return $this->belongsTo('App\Models\Article', 'article_id', 'id');
+        return $this->belongsTo('App\Models\Article', 'article_id');
+    }
+
+    public function user() {
+        return $this->belongsTo('App\Models\User', 'user_id');
     }
 
     public function file() {
         return $this->morphToMany(File::class, 'fileable', 'fileable');
     }
-/*
+
     public function parent() {
-        return $this->hasMany(Reply::class, 'parent_id', 'id');
+        return $this->belongsTo(Reply::class, 'parent_id', 'id')
+            ->whereNull('parent_id');
     }
 
     public function child() {
-        return $this->belongsTo(Reply::class, 'id', 'parent_id');
-    }*/
+        return $this->hasMany(Reply::class, 'parent_id', 'id');
+    }
 }

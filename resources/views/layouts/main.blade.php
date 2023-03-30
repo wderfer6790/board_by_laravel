@@ -13,7 +13,10 @@
     <div class="row d-none d-md-block d-sm-none">
         <nav class="navbar fixed-top col-12 bg-black">
             <div class="col-2 text-end">
-                <a class="navbar-brand link-light fw-bold" href="#">H S P</a>
+                <a class="navbar-brand link-light fw-bold" href="{{ route('list') }}">H S P</a>
+            </div>
+            <div class="search_box offset-1 col-6">
+                <input type="text" id="search_value" class="form-control input-sm">
             </div>
 
             <div class="offset-1 col-2 dropdown text-left">
@@ -69,6 +72,6 @@
         </div>
     </div>
 </div>
-@yield('footerScript')
+@yield('script')
 </body>
 </html>

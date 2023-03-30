@@ -4,9 +4,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <script src="{{ asset('js/app.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}"
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     @yield('loadScript')
-    @yield('headStyle')
+    @yield('style')
 </head>
 <body>
 <div class="container bg-light">
@@ -66,6 +66,6 @@
         </div>
     </div>
 </div>
-@yield('footerScript')
+@yield('script')
 </body>
 </html>

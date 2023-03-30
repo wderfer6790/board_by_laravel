@@ -26,7 +26,8 @@ class Article extends Model
     }
 
     public function replies() {
-        return $this->hasMany('App\Models\Reply', 'article_id', 'id');
+        return $this->hasMany('App\Models\Reply', 'article_id')
+            ->whereNull('parent_id');
     }
 
     public function files() {
