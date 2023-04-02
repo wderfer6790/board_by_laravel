@@ -23,48 +23,29 @@ class FileController extends Controller
 
         $mimeType = $file->getMimeType();
         $filename = $file->getClientOriginalName();
-        $pathname = uniqid('uploaded_') . "." . $file->getClientOriginalExtension();
+        $pathname = uniqid('uploaded_' . date('ymdHis') . '_') . "." . $file->getClientOriginalExtension();
         $uploadPath = storage_path('app/public/uploaded/') . $pathname;
         if (!copy($file->getPathname(), $uploadPath)) {
             $res['msg'] = "업로드 중 문제가 발생하였습니다.copy";
             goto sendRes;
         }
 
-        $now = date('Y-m-d H:i:s');
-        $fileId = $request->post('file_id');
-        if ($fileId) {
-            $uploadedFile = File::find($fileId)->first();
-            $oldFiles = $uploadedFile->files;
-            $uploadedFile->files = $oldFiles + [[
-                    'name' => $filename,
-                    'path' => $uploadPath,
-                    'mime' => $mimeType,
-                    'upload_at' => $now,
-                ]];
-            $uploadedFile->save();
+        $uploadedFile = new File([
+            'name' => $filename,
+            'path' => $uploadPath,
+            'mime' => $mimeType,
+        ]);
 
-        } else {
-            $uploadedFile = new File();
-            if ($uploadedFile->fill([
-                'files' => [
-                    [
-                        'name' => $filename,
-                        'path' => $uploadPath,
-                        'mime' => $mimeType,
-                        'upload_at' => $now
-                    ]
-                ],
-            ])->save()) {
-                $res['msg'] = "업로드 중 문제가 발생하였습니다.";
-                goto sendRes;
-            }
+        if ($uploadedFile->save()) {
+            $res['msg'] = "업로드 중 문제가 발생하였습니다.";
+            goto sendRes;
         }
 
         $res['res'] = true;
         $res['file_id'] = $uploadedFile->id;
-        $res['name'] = $filename;
-        $res['src'] = asset('storage/uploaded/' . $pathname);
-        $res['type'] = explode('/', $mimeType)[0];
+        $res['name'] = $uploadedFile->name;
+        $res['src'] = asset('storage/uploaded/' . $uploadedFile->path);
+        $res['mime'] = $uploadedFile->mime;
 
         sendRes:
         return response()->json($res);

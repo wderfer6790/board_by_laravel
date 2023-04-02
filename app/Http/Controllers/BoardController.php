@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use App\Models\{User, Article, Reply, File};
-use Illuminate\Support\Facades\{File as FileInfo, Storage, DB};
+use Illuminate\Support\Facades\{File as FileInfo, Storage, DB, Auth};
 
 class BoardController extends Controller
 {
@@ -99,6 +99,56 @@ class BoardController extends Controller
             $res['msg'] = "잘못된 접근입니다.";
             goto sendRes;
         }
+        $subject = $request->post('subject');
+        $content = $request->post('content', '');
+        $uploaded_files = $request->post('uploaded_files', []);
+        $embedded_files = $request->post('embedded_files', []);
+
+        array_walk_recursive($content, function(&$item, $key) {
+            if ($key === 'insert') {
+                $item = $item ?? "\n";
+                $item = str_replace("\n", "\\n", $item);
+            }
+        });
+
+
+        $article = new Article([
+            'subject' => $subject,
+            'content' => serialize($content)
+        ]);
+
+        // TODO
+        if (User::find(7)->articles()->save($article)) {
+            // error handling
+        }
+
+        /*
+        if (Auth::user()->articles()->save($article)) {
+            // error handling
+        }
+        */
+
+        // test
+        // $article = Article::find(102);
+
+
+        // fileable sync
+        $article->files()->sync($embedded_files);
+
+        // other file delete
+        $delete_files = array_diff($uploaded_files, $embedded_files);
+        File::whereIn('id', $delete_files)->delete();
+
+        $content = unserialize($article->content);
+        array_walk_recursive($content, function(&$item, $key) {
+            if ($key === 'insert') {
+                $item = str_replace("\\n", "\n", $item);
+            }
+        });
+
+        $res['res'] = true;
+        $res['content'] = $content;
+        $res['article_id'] = $article->id;
 
         sendRes:
         return response()->json($res);

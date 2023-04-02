@@ -1,6 +1,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <title>HSP</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <script src="{{ asset('js/app.js') }}"></script>
@@ -14,7 +15,7 @@
     <div class="row d-none d-md-block d-sm-none">
         <nav class="navbar fixed-top col-12 bg-black">
             <div class="col-2 text-end">
-                <a class="navbar-brand link-light fw-bold" href="#">H S P</a>
+                <a class="navbar-brand link-light fw-bold" href="{{ route('list') }}">H S P</a>
             </div>
 
             <div class="offset-8 col-2 dropdown text-left">

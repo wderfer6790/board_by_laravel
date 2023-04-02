@@ -23,11 +23,14 @@
         </div>
     </div>
     <hr class="mt-5">
+    {{-- todo --}}
+    @if(1)
     <p class="text-end">
         <a id="edit_btn" class="fw-bold" href="{{ route('edit', ['id' => $article->id]) }}">edit</a>
         &nbsp;&nbsp;|&nbsp;&nbsp;
         <a id="delete_btn" class="fw-bold">delete</a>
     </p>
+    @endif
 
     <!-- article replay -->
     <div class="row bg-light mt-5">
