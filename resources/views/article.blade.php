@@ -16,8 +16,8 @@
     <!-- article content -->
     <div class="row bg-light mt-5">
         <div class="col">
-            <div class="article">
-                {!! $article->content !!}
+            <div class="article-content">
+
             </div>
 
         </div>
@@ -80,11 +80,17 @@
             @endforelse
         </div>
     </div>
+    <div class="quill_container d-none"></div>
 @endsection
 
 @section('script')
 <script>
 $(document).ready(function () {
+    // content render
+    let quill = new Quill(".quill_container");
+    quill.setContents({!! $content !!});
+    $("div.article-content").html(quill.root.innerHTML);
+
     $("#delete_btn").click(function(e) {
         e.preventDefault();
         if (confirm('글을 삭제하시겠습니까?')) {

@@ -58,5 +58,5 @@ Route::group([
 ], function() {
     Route::get('/file', [FileController::class, 'download'])->name('download');
     Route::post('/file', [FileController::class, 'upload'])->name('upload');
-    Route::delete('/file', [FileController::class, 'delete'])->name('delete');
+    Route::delete('/file/delete', [FileController::class, 'delete'])->name('delete');
 });

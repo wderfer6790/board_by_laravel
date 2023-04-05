@@ -6,6 +6,15 @@
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <script src="{{ asset('js/app.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+
+    <!-- Theme included stylesheets -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <!-- Core build with no theme, formatting, non-essential modules -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.core.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.core.js"></script>
+    <!-- Include the Quill library -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
     @yield('loadScript')
     @yield('style')
 </head>

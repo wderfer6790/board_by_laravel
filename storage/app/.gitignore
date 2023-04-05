@@ -1,4 +1,4 @@
 *
-!public/image/
-!public/video/
+!public/image/*
+!public/video/*
 !.gitignore

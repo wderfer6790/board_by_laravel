@@ -17,7 +17,7 @@ class CreateFileableTable extends Migration
             $table->foreignIdFor(App\Models\File::class);
             $table->unsignedBigInteger('fileable_id');
             $table->string('fileable_type', 64);
-            $table->unique(['file_id', 'fileable_id', 'fileable_type']);
+            $table->unique(['file_id', 'fileable_id', 'fileable_type'], 'fileable_unique');
         });
     }
 

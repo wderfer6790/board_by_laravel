@@ -13,7 +13,6 @@ class BoardController extends Controller
 {
     public function list()
     {
-
         return view('list');
     }
 
@@ -25,14 +24,20 @@ class BoardController extends Controller
             goto sendRes;
         }
 
+        $init = $request->boolean('init');
+        $total = $request->input('total', 0);
+        $sort = $request->input('sort', '-updated_at');
         $search = $request->input('search', '');
 
-        $sort = $request->input('sort', '-updated_at');
         $col = ltrim($sort, "-|+");
         $order = substr($sort, 0, 1) === '-' ? 'desc' : 'asc';
 
-        $total = $request->input('total', 0);
-        $item_per_request = 30;
+        $skip = $total;
+        $take = 30;
+        if ($init && $total > 0) {
+            $skip = 0;
+            $take = $total;
+        }
 
         $article_ids = [];
         if ($search) {
@@ -50,17 +55,16 @@ class BoardController extends Controller
         }
 
         $collection = Article::with(['user:id,name', 'files:id,path'])
-            ->when(!empty($article_ids), function ($q) use ($article_ids, $total, $item_per_request) {
+            ->when(!empty($article_ids), function ($q) use ($article_ids, $skip, $take) {
                 $q->whereIn('id', $article_ids)
                     ->orderByRaw("FIELD(id, " . implode(",", $article_ids) . ")")
-                    ->skip($total)
-                    ->take($item_per_request);
-            }, function ($q) use ($col, $order, $total, $item_per_request) {
+                    ->skip($skip)
+                    ->take($take);
+            }, function ($q) use ($col, $order, $skip, $take) {
                 $q->orderBy($col, $order)
-                    ->skip($total)
-                    ->take($item_per_request);
-            })
-            ->get();
+                    ->skip($skip)
+                    ->take($take);
+            })->get();
 
         foreach ($collection as $row) {
             $article = [
@@ -95,14 +99,20 @@ class BoardController extends Controller
     public function store(Request $request)
     {
         $res = ['res' => false, 'msg' => ""];
+
         if (!$request->isXmlHttpRequest()) {
             $res['msg'] = "잘못된 접근입니다.";
             goto sendRes;
         }
+
         $subject = $request->post('subject');
         $content = $request->post('content', '');
         $uploaded_files = $request->post('uploaded_files', []);
         $embedded_files = $request->post('embedded_files', []);
+
+        $embedded_files = array_filter($embedded_files, function($val) {
+            return strlen($val) > 0;
+        });
 
         array_walk_recursive($content, function(&$item, $key) {
             if ($key === 'insert') {
@@ -111,13 +121,12 @@ class BoardController extends Controller
             }
         });
 
-
         $article = new Article([
             'subject' => $subject,
             'content' => serialize($content)
         ]);
 
-        // TODO
+        // TODO article store find user
         if (User::find(7)->articles()->save($article)) {
             // error handling
         }
@@ -127,10 +136,6 @@ class BoardController extends Controller
             // error handling
         }
         */
-
-        // test
-        // $article = Article::find(102);
-
 
         // fileable sync
         $article->files()->sync($embedded_files);
@@ -142,7 +147,8 @@ class BoardController extends Controller
         $content = unserialize($article->content);
         array_walk_recursive($content, function(&$item, $key) {
             if ($key === 'insert') {
-                $item = str_replace("\\n", "\n", $item);
+//                $item = str_replace("\\n", "\n", $item);
+                $item = stripslashes($item);
             }
         });
 
@@ -164,7 +170,15 @@ class BoardController extends Controller
             ->where('id', $id)
             ->first();
 
-        return view('article', compact('article'));
+        $content = unserialize($article->content);
+        array_walk_recursive($content, function(&$item, $key) {
+            if ($key === 'insert') {
+                $item = str_replace("\\n", "\n", $item);
+            }
+        });
+        $content = json_encode($content);
+
+        return view('article', compact('article', 'content'));
     }
 
     public function edit($id)

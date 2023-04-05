@@ -58,28 +58,14 @@
                 }
             });
 
-            // image test
-            console.log(quill.insertEmbed(0, 'image', '{{ asset('storage/image/etc/dog.png') }}'));
-
+            {{-- todo test --}}
             $("#test_btn").click(function () {
-                let delta = quill.getContents();
-                /*console.log(delta);
-                let dest_src = "http://localhost/p02/storage/image/etc/dog.png";
-                quill.setContents(delta.filter(
-                    val => !(typeof val.insert === 'object'
-                        && val.insert.hasOwnProperty('image')
-                        && val.insert.image === dest_src)
-                ));*/
-
-                console.log(delta.filter(
-                    val => typeof val.insert === 'object' && val.insert.hasOwnProperty('image')
-                ));
             });
 
             // store
             $("#save_btn").click(function () {
                 let content = quill.getContents();
-                let editor_data = {
+                let article_data = {
                     subject: $("#subject").val(),
                     content: content.ops,
                     uploaded_files: [],
@@ -92,23 +78,25 @@
                         embedded_src_list.push(val.insert.image);
                     }
                 });
-
+                console.log(embedded_src_list);
                 uploaded_files.map(val => {
-                    editor_data.uploaded_files.push(val.file_id);
+                    article_data.uploaded_files.push(val.file_id);
 
                     if (embedded_src_list.length > 0) {
                         let embed_idx = embedded_src_list.indexOf(val.src);
 
                         if (embed_idx !== -1) {
-                            editor_data.embedded_files[embed_idx] = val.file_id;
+                            article_data.embedded_files[embed_idx] = val.file_id;
                         }
                     }
                 });
 
+                console.log(article_data);
+
                 $.ajax({
                     url: '{{ route('store') }}',
                     type: 'post',
-                    data: editor_data,
+                    data: article_data,
                     dataType: 'json',
                     success: function (data) {
                         console.log(data);
@@ -170,6 +158,8 @@
             let quill_idx = null;
             quill.on('selection-change', function (range, oldRange, source) {
                 quill_idx = range ? range.index : range;
+
+                console.log("selection idx : " + quill_idx);
             });
 
             // insert
@@ -177,6 +167,8 @@
                 if (quill_idx === null) {
                     quill_idx = quill.getLength() - 1;
                 }
+
+                console.log("embedded idx : " + quill_idx);
                 quill.insertEmbed(quill_idx, 'image', $(this).attr('src'));
             });
 
@@ -190,7 +182,7 @@
 
                 // editor embedded file delete
                 let dest_src = $("img[data-id=" + delete_btn.data('id') + "]").attr('src');
-                quill.setContents(delta.filter(
+                quill.setContents(quill.getContents().filter(
                     val => !(typeof val.insert === 'object'
                         && val.insert.hasOwnProperty('image')
                         && val.insert.image === dest_src)
@@ -198,10 +190,11 @@
 
                 // uploaded file delete
                 $.ajax({
-                    url: '{{ route('delete') }}',
+                    url: '{{ route('delete') }}' + '?' + Math.random(),
                     type: 'delete',
+                    cache: false,
                     data: {
-                        file_id: delete_btn.data('id')
+                        file_id: delete_btn.data('id'),
                     },
                     dataType: 'json',
                     success: function (data) {
@@ -260,16 +253,4 @@
             overflow-y: scroll;
         }*/
     </style>
-@endsection
-
-@section('loadScript')
-    <!-- Theme included stylesheets -->
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-
-    <!-- Core build with no theme, formatting, non-essential modules -->
-    <link href="https://cdn.quilljs.com/1.3.6/quill.core.css" rel="stylesheet">
-    <script src="https://cdn.quilljs.com/1.3.6/quill.core.js"></script>
-
-    <!-- Include the Quill library -->
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 @endsection

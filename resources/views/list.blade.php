@@ -7,7 +7,7 @@
 @section('script')
     <script>
         $(document).ready(function () {
-            console.log(location);
+            let init = true;
             let total = 0;
             let sort = '-updated_at';
             let search = '';
@@ -64,12 +64,14 @@
                     method: 'get',
                     async: false,
                     data: {
+                        init: init,
                         total: total,
                         sort: sort,
                         search: search,
                         search_first: search_first,
                     },
                     success: function (data) {
+                        init = false;
                         total = data.total;
                         sort = data.sort;
                         search = data.search ?? '';
@@ -87,11 +89,14 @@
                                 let cardImage = $("<img src='" + article.thumbnail + "' class='card-img-top article-thumbnail'>");
                                 let cardBody = $("<div class='card-body'>");
                                 let cardTitle = $("<h5 class='card-title' data-id='" + article.id + "'>" + article.subject + "</h5>");
-                                let cardText = $("<p class='card-text'>" + article.content + "</p>");
+                                {{-- todo card content disp --}}
+                                // let cardText = $("<p class='card-text'>" + article.content + "</p>");
                                 let author = $("<p class='card-author text-end'><img class='author-profile rounded-circle' src='" + article.profile + "'> " + article.author + "</p>");
                                 let other = $("<p class='card-other'><span class='views'>조회수 " + article.views + "회</span><span class='date'>" + article.updated_at + "</span></p>");
 
-                                cardBody.append(cardTitle, cardText, author, other);
+                                // cardBody.append(cardTitle, cardText, author, other);
+                                cardBody.append(cardTitle, author, other);
+
                                 card.append(cardImage, cardBody);
 
                                 container.append(card);
