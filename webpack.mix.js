@@ -16,8 +16,14 @@ const mix = require('laravel-mix');
 
 mix.scripts([
         'node_modules/jquery/dist/jquery.js',
-        'node_modules/bootstrap/dist/js/bootstrap.js'
+        'node_modules/bootstrap/dist/js/bootstrap.js',
+        'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
     ], 'public/js/app.js')
     .styles([
-        'node_modules/bootstrap/dist/css/bootstrap.css'
+        'node_modules/bootstrap/dist/css/bootstrap.css',
+        'node_modules/bootstrap/dist/css/bootstrap-grid.css',
+        'node_modules/bootstrap/dist/css/bootstrap-reboot.css',
+        'node_modules/bootstrap/dist/css/bootstrap-utilities.css',
+
+
     ], 'public/css/app.cs');

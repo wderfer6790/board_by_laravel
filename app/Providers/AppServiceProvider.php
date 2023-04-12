@@ -30,5 +30,9 @@ class AppServiceProvider extends ServiceProvider
             'article' => 'App\Models\Article',
             'reply' => 'App\Models\Reply',
         ]);
+
+        Blade::if('displayOption', function($user_id) {
+            return auth()->check() && auth()->id() == $user_id;
+        });
     }
 }

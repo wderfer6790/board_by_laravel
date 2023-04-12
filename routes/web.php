@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\{AuthController, BoardController, ReplyController, FileController};
+use App\Http\Controllers\{AuthController, UserController, BoardController, ReplyController, FileController};
 
 /*
 |--------------------------------------------------------------------------
@@ -20,18 +20,26 @@ Route::get('/', function () {
 });
 
 // auth
-Route::group([
-//    'as' => 'auth', 'prefix' => 'auth'
-], function() {
+Route::group([], function() {
     Route::view('/login', 'login')->name('login');
-    Route::post('/auth', [AuthController::class, 'login'])->name('login');
-    Route::delete('/auth', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/login', [AuthController::class, 'login'])->name('loginProcess');
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::view('/signin', 'signin')->name('signin');
+    Route::post('/signin', [AuthController::class, 'signin'])->name('signinProcess');
+
+    Route::post('/verifyEmail', [AuthController::class, 'verifyEmail'])->name('verifyEmail');
+    Route::post('/resendEmail', [AuthController::class, 'resendEmail'])->name('resendEmail');
+});
+
+// user
+Route::group([], function() {
+    Route::get('/user', [UserController::class, 'profile'])->name('profile');
+    Route::post('/user', [UserController::class, 'update'])->name('profileUpdate');
 });
 
 // board
-Route::group([
-//    'as' => 'board', 'prefix' => 'board'
-], function() {
+Route::group([], function() {
     // article
     Route::get('/', [BoardController::class, 'list'])->name('list');
     Route::get('/search', [BoardController::class, 'getArticles'])->name('getArticles');
@@ -47,16 +55,16 @@ Route::group([
     Route::delete('/{id}', [BoardController::class, 'destroy'])->name('destroy');
 
     // reply
-    Route::post('/reply/{article_id}', [ReplyController::class, 'store'])->name('reply');
-    Route::match(['put', 'patch'], '/reply/{id}', [ReplyController::class, 'store'])->name('replyUpdate');
-    Route::delete('/reply/{id}', [ReplyController::class, 'store'])->name('replyDestroy')->name('replyDestroy');
+    Route::post('/reply/{article_id}/{parent_id?}', [ReplyController::class, 'store'])
+        ->name('replyStore')
+        ->whereNumber(['article_id', 'parent_id']);
+    Route::match(['put', 'patch'], '/reply/{id}', [ReplyController::class, 'update`'])->name('replyUpdate');
+    Route::delete('/reply/{id}', [ReplyController::class, 'destroy'])->name('replyDestroy');
 });
 
 // file
-Route::group([
-
-], function() {
-    Route::get('/file', [FileController::class, 'download'])->name('download');
+Route::group([], function() {
+    Route::get('/file/{id}', [FileController::class, 'download'])->name('download');
     Route::post('/file', [FileController::class, 'upload'])->name('upload');
-    Route::delete('/file/delete', [FileController::class, 'delete'])->name('delete');
+    Route::delete('/file/{id}/delete', [FileController::class, 'delete'])->name('delete');
 });

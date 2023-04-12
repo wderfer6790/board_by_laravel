@@ -6,7 +6,7 @@
         <div class="col">
             <div class="article-header">
                 <h3>제목</h3>
-                <input type="text" class="form-control" id="subject">
+                <input type="text" class="form-control" id="subject" value="{{ $article->subject }}">
             </div>
         </div>
     </div>
@@ -25,7 +25,7 @@
                 <small class="text-danger">※ 업로드 후 표시된 파일을 선택해야 내용에 반영됩니다.</small>
             </div>
             <div class="article-footer text-end mt-5">
-                <input type="button" id="save_btn" class="btn btn-dark col-12" value="새 글 작성">
+                <input type="button" id="save_btn" class="btn btn-dark col-12" value="게시글 수정">
             </div>
         </div>
     </div>
@@ -56,9 +56,13 @@
                 }
             });
 
-            // store
+            quill.setContents({!! $content !!});
+
+            let uploaded_files = {!! json_encode($attach_files) !!};
+
+            // update
             $("#save_btn").click(function () {
-                if (!confirm('작성한 글을 저장하시겠습니까?')) {
+                if (!confirm('게시글을 수정하시겠습니까?')) {
                     return false;
                 }
 
@@ -90,14 +94,14 @@
                 });
 
                 $.ajax({
-                    url: '{{ route('store') }}',
-                    type: 'post',
+                    url: '{{ route('update', $article->id) }}',
+                    type: 'put',
                     data: article_data,
                     dataType: 'json',
                     success: function (data) {
                         alert(data.msg);
                         if (data.res) {
-                            location.href = '{{ route('article', ':id') }}'.replace(':id', data.id) + location.search;
+                            location.href = '{{ route('article', $article->id) }}' + location.search;
                         }
                     },
                     error: function (xhr) {
@@ -107,7 +111,6 @@
             });
 
             // file upload
-            let uploaded_files = [];
             $("#file_upload_btn").click(function () {
                 let file = $("#upload_file");
                 if (file.val().length === 0) {

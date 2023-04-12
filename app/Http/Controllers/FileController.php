@@ -66,19 +66,11 @@ class FileController extends Controller
         return response()->json($res);
     }
 
-    public function delete(Request $request)
+    public function delete($id)
     {
         $res = ['res' => false, 'msg' => ""];
 
-        if (!$request->isXmlHttpRequest()
-            || !$request->isMethod('delete')
-            || !$fileId = $request->input('file_id')
-        ) {
-            $res['msg'] = "잘몬된 접근입니다";
-            goto sendRes;
-        }
-
-        $file = File::find($fileId);
+        $file = File::find($id);
         if (!$file) {
             $res['msg'] = "삭제할 파일을 찾지 못하였습니다.";
             goto sendRes;

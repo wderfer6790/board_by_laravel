@@ -9,29 +9,29 @@
         </div>
     </div>
     <div class="row mt-3">
+        <label for="username" class="form-label col-md-2">name</label>
+        <div class="col-md-10">
+            <input type="text" id="username" name="username" class="form-control" value="sya">
+            <div class="invalid-feedback" data-for="username"></div>
+        </div>
+    </div>
+    <div class="row mt-3">
         <label for="password" class="form-label col-md-2">password</label>
         <div class="col-md-10">
             <input type="password" id="password" name="password" class="form-control" value="qwer">
             <div class="invalid-feedback" data-for="password"></div>
         </div>
     </div>
-    <div class="row mt-5">
-        <div class="col-md-2 float-end">
-            <div class="form-check form-switch">
-                <input type="checkbox" class="form-check-input" role="switch" id="remember" name="remember" checked>
-                <label class="form-check-label" for="remember">Remember</label>
-            </div>
+    <div class="row mt-3">
+        <label for="password_check" class="form-label col-md-2">password check</label>
+        <div class="col-md-10">
+            <input type="password" id="password_check" name="password_check" class="form-control" value="qwer">
+            <div class="invalid-feedback" data-for="password_check"></div>
         </div>
     </div>
     <div class="row mt-3">
         <div class="col-md-12">
-            <input type="button" id="login_btn" class="btn btn-dark form-control" value="login">
-        </div>
-    </div>
-
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <input type="button" id="sign_in_btn" class="btn btn-dark form-control" value="sign in">
+            <input type="button" id="signin_btn" class="btn btn-dark form-control" value="sign in">
         </div>
     </div>
 @endsection
@@ -46,23 +46,26 @@ $(document).ready(function() {
     });
 
     let processing = false;
-    $("#login_btn").click(function() {
-        if (processing) {
-            return false;
-        }
+    $("#signin_btn").click(function() {
+        if (processing) return false;
+
+        if (!confirm("작성한 내용으로 가입하시겠습니까?")) return false;
 
         processing = true;
+
         $.ajax({
-            url: '{{ route('login') }}',
+            url: '{{ route('signinProcess') }}',
             type: 'post',
             data: {
                 'email': $("#email").val().trim(),
+                'username': $("#username").val().trim(),
                 'password': $("#password").val().trim(),
-                'remember': $("#remember").is(":checked")
+                'password_check': $("#password_check").val().trim(),
             },
             success: function(data) {
                 if (data.res) {
-                    location.href = "{{ route('list') }}";
+                    alert(data.msg);
+                    location.href = "{{ route('login') }}";
 
                 } else {
                     if (typeof data.msg === 'string') {
@@ -84,11 +87,6 @@ $(document).ready(function() {
                 console.log(xhr);
             }
         });
-    });
-
-    // sign in
-    $("#sign_in_btn").click(function() {
-        document.location.href = '{{ route('signin') }}';
     });
 });
 </script>

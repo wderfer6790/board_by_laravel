@@ -27,19 +27,27 @@
                 <a class="navbar-brand link-light fw-bold" href="{{ route('list') }}">H S P</a>
             </div>
 
+            @auth
             <div class="offset-8 col-2 dropdown text-left">
                 <a href="#" id="user_btn" class="link-dark" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="{{ asset('storage/image/etc/dog.png') }}" width="50" height="50" class="rounded-circle">
                 </a>
                 <ul class="dropdown-menu bg-dark text-small" aria-labelledby="user_btn">
-                    <li><a class="dropdown-item bg-dark link-light" href="#">New Article</a></li>
-                    <li><a class="dropdown-item bg-dark link-light" href="#">Profile</a></li>
+                    <li><a class="dropdown-item bg-dark link-light" href="{{ route('create') }}">New Article</a></li>
+                    <li><a class="dropdown-item bg-dark link-light" href="{{ route('profile') }}">Profile</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item bg-dark link-danger" href="#">Logout</a></li>
+                    <li><a class="dropdown-item bg-dark link-danger" href="{{ route('logout') }}">Logout</a></li>
                 </ul>
             </div>
+            @endauth
+
+            @guest
+                <div class="offset-1 col-2 dropdown text-left">
+                    <a href="{{ route('login') }}" class="link-light link-underline-opacity-0">LOGIN</a>
+                </div>
+            @endguest
         </nav>
     </div>
 

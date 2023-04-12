@@ -16,14 +16,19 @@ class ReplyFactory extends Factory
      */
     public function definition()
     {
-        $article = Article::take(1)->inRandomOrder()->first();
-        if (!$article || !$article->user_id || !User::find($article->user_id)) {
+        $article_id = Article::take(1)->inRandomOrder()->value('id');
+        if (!$article_id) {
             throw new Exception\DatabaseFactoriesException('article empty');
         }
 
+        $user_id = User::take(1)->inRandomOrder()->value('id');
+        if (!$user_id) {
+            throw new Exception\DatabaseFactoriesException('user not found');
+        }
+
         return [
-            'article_id' => $article->id,
-            'user_id' => $article->user_id,
+            'article_id' => $article_id,
+            'user_id' => $user_id,
             'content' => $this->faker->text(128)
         ];
     }

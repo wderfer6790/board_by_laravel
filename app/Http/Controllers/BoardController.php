@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
-use App\Models\{User, Article, Reply, File};
-use Illuminate\Support\Facades\{File as FileInfo, Storage, DB, Auth};
+use App\Models\{User, Article, File};
+use Illuminate\Support\Facades\{File as FileInfo};
 
 class BoardController extends Controller
 {
@@ -110,11 +107,11 @@ class BoardController extends Controller
         $uploaded_files = $request->post('uploaded_files', []);
         $embedded_files = $request->post('embedded_files', []);
 
-        $embedded_files = array_filter($embedded_files, function($val) {
+        $embedded_files = array_filter($embedded_files, function ($val) {
             return strlen($val) > 0;
         });
 
-        array_walk_recursive($content, function(&$item, $key) {
+        array_walk_recursive($content, function (&$item, $key) {
             if ($key === 'insert') {
                 $item = $item ?? "\n";
                 $item = str_replace("\n", "\\n", $item);
@@ -125,42 +122,31 @@ class BoardController extends Controller
             'subject' => $subject,
             'content' => serialize($content)
         ]);
-
-        // TODO article store find user
-        if (User::find(7)->articles()->save($article)) {
+        if (!auth()->user()->articles()->save($article)) {
             // error handling
         }
 
-        /*
-        if (Auth::user()->articles()->save($article)) {
-            // error handling
-        }
-        */
-
-        // fileable sync
+        // morph sync
         $article->files()->sync($embedded_files);
 
-        // other file delete
-        $delete_files = array_diff($uploaded_files, $embedded_files);
-        File::whereIn('id', $delete_files)->delete();
-
-        $content = unserialize($article->content);
-        array_walk_recursive($content, function(&$item, $key) {
-            if ($key === 'insert') {
-//                $item = str_replace("\\n", "\n", $item);
-                $item = stripslashes($item);
-            }
-        });
+        // other uploaded file delete
+        $delete_file_ids = array_diff($uploaded_files, $embedded_files);
+        if (!empty($delete_file_ids)) {
+            $delete_files = File::whereIn('id', $delete_file_ids)->get();
+            $delete_files->map(function ($file) {
+                FileInfo::delete($file->path);
+                $file->delete();
+            });
+        }
 
         $res['res'] = true;
-        $res['content'] = $content;
-        $res['article_id'] = $article->id;
+        $res['id'] = $article->id;
 
         sendRes:
         return response()->json($res);
     }
 
-    public function article(Request $request, $id)
+    public function article($id)
     {
         $article = Article::with(["user:id,name", "files:id,path", 'replies' => function ($q) {
             $q->with(['user' => function ($q) {
@@ -171,7 +157,7 @@ class BoardController extends Controller
             ->first();
 
         $content = unserialize($article->content);
-        array_walk_recursive($content, function(&$item, $key) {
+        array_walk_recursive($content, function (&$item, $key) {
             if ($key === 'insert') {
                 $item = str_replace("\\n", "\n", $item);
             }
@@ -183,17 +169,77 @@ class BoardController extends Controller
 
     public function edit($id)
     {
-        $article = [];
-        return view('edit', compact('article'));
+        $article = Article::with("user:id,name")
+            ->where('id', $id)
+            ->first();
+
+        $content = unserialize($article->content);
+        array_walk_recursive($content, function (&$item, $key) {
+            if ($key === 'insert') {
+                $item = str_replace("\\n", "\n", $item);
+            }
+        });
+        $content = json_encode($content);
+
+        $collection = $article->files()->get(["id AS file_id", "path AS src"]);
+        $collection->map(function ($file) {
+            $file->src = asset($file->src);
+        });
+        $attach_files = $collection->toArray();
+
+
+        return view('edit', compact('article', 'content', 'attach_files'));
     }
 
     public function update(Request $request, $id)
     {
         $res = ['res' => false, 'msg' => ""];
+
         if (!$request->isXmlHttpRequest()) {
             $res['msg'] = "잘못된 접근입니다.";
             goto sendRes;
         }
+
+        $subject = $request->post('subject');
+        $content = $request->post('content', '');
+        $uploaded_files = $request->post('uploaded_files', []);
+        $embedded_files = $request->post('embedded_files', []);
+
+        $embedded_files = array_filter($embedded_files, function ($val) {
+            return strlen($val) > 0;
+        });
+
+        array_walk_recursive($content, function (&$item, $key) {
+            if ($key === 'insert') {
+                $item = $item ?? "\n";
+                $item = str_replace("\n", "\\n", $item);
+            }
+        });
+
+        $article = Article::find($id);
+        if (!$article->update([
+            'subject' => $subject,
+            'content' => serialize($content)
+        ])) {
+            $res['msg'] = "수정 중 문제가 발생하였습니다.";
+            goto sendRes;
+        }
+
+        // morph sync
+        $article->files()->sync($embedded_files);
+
+        // other uploaded file delete
+        $delete_file_ids = array_diff($uploaded_files, $embedded_files);
+        if (!empty($delete_file_ids)) {
+            $delete_files = File::whereIn('id', $delete_file_ids)->get();
+            $delete_files->map(function ($file) {
+                FileInfo::delete($file->path);
+                $file->delete();
+            });
+        }
+
+        $res['res'] = true;
+        $res['msg'] = "수정되었습니다.";
 
         sendRes:
         return response()->json($res);

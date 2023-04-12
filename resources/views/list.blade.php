@@ -115,9 +115,6 @@
 
 @section('style')
     <style>
-        div.card-list {
-            margin-top: 5rem;
-        }
         div.card {
             margin: 1rem 3rem;
             padding: 0;
