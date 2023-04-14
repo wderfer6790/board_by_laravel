@@ -24,10 +24,21 @@ ArticleFactory extends Factory
 
         $updated_at = $this->faker->date("Y-m-d H:i:s");
         $views = $this->faker->numberBetween(0, 9999);
+        $content = $this->faker->text(1024);
+        $divide = (int)(strlen($content)/2);
+        $prev = substr($content, 0, $divide);
+        $next = substr($content, $divide);
+
+
         return [
             'user_id' => $userId,
             'subject' => $this->faker->text(64),
-            'content' => $this->faker->text(1024),
+            'content' => serialize([
+                ['insert' => $prev],
+                ['insert' => "\\n"],
+                ['insert' => "\\n"],
+                ['insert' => $next]
+            ]),
             'views' => $views,
             'likes' => $this->faker->numberBetween(0, $views),
             'created_at' => $this->faker->date("Y-m-d H:i:s", $updated_at),
@@ -46,11 +57,15 @@ ArticleFactory extends Factory
 
                 $article->files()->attach($file);
 
-                $img_idx = random_int(0, strlen($article->content) - 1);
+                $arr = unserialize($article->content);
                 $article->update([
-                    'content' => substr($article->content, 0, $img_idx)
-                        . "<br><img src='" . asset($file->path) . "'><br>"
-                        . substr($article->content, $img_idx + 1)
+                    'content' => serialize([
+                        $arr[0],
+                        $arr[1],
+                        ['insert' => ['image' => asset($file->path)]],
+                        $arr[2],
+                        $arr[3],
+                    ])
                 ]);
             }
         });

@@ -35,7 +35,8 @@ class ReplyController extends Controller
         }
 
         $res['res'] = true;
-        $res['reply_id'] = $reply->id;
+        $res['id'] = $reply->id;
+        $res['parent_id'] = $parent_id ?? $reply->id;
         $res['author'] = $user->name;
         $res['author_thumbnail'] = $user->file->count() > 0 ? asset($user->file->get(0)->path) : asset('storage/image/no_image.png');
         $res['publish_date'] = date('H:i y/m/d', strtotime($reply->updated_at));
@@ -53,6 +54,27 @@ class ReplyController extends Controller
             goto sendRes;
         }
 
+        if (!$content = $request->input('content')) {
+            $res['msg'] = "댓글 내용이 없습니다.";
+            goto sendRes;
+        }
+
+        $reply = Reply::find($id);
+        if (!$reply) {
+            $res['msg'] = "수정할 댓글 정보를 찾지 못하였습니다.";
+            goto sendRes;
+        }
+
+        if (!$reply->update([
+            'content' => $content
+        ])) {
+            $res['msg'] = "댓글 수정 중 문제가 발생하였습니다.";
+            goto sendRes;
+        }
+
+        $res['res'] = true;
+        $res['content'] = $reply->content;
+
         sendRes:
         return response()->json($res);
     }
@@ -63,6 +85,17 @@ class ReplyController extends Controller
             $res['msg'] = "잘못된 접근입니다.";
             goto sendRes;
         }
+
+        if (!$reply = Reply::find($id)) {
+            $res['msg'] = "삭제할 대상을 찾을 수 없습니다.";
+            goto sendRes;
+        }
+
+        $reply->file()->delete();
+        $reply->child()->delete();
+        $reply->delete();
+
+        $res['res'] = true;
 
         sendRes:
         return response()->json($res);

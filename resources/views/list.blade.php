@@ -89,8 +89,6 @@
                                 let cardImage = $("<img src='" + article.thumbnail + "' class='card-img-top article-thumbnail'>");
                                 let cardBody = $("<div class='card-body'>");
                                 let cardTitle = $("<h5 class='card-title' data-id='" + article.id + "'>" + article.subject + "</h5>");
-                                {{-- todo card content disp --}}
-                                // let cardText = $("<p class='card-text'>" + article.content + "</p>");
                                 let author = $("<p class='card-author text-end'><img class='author-profile rounded-circle' src='" + article.profile + "'> " + article.author + "</p>");
                                 let other = $("<p class='card-other'><span class='views'>조회수 " + article.views + "회</span><span class='date'>" + article.updated_at + "</span></p>");
 
@@ -125,7 +123,7 @@
             height: 18rem;
         }
 
-        h5.card-title, p.card-text {
+        h5.card-title {
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -133,11 +131,7 @@
             text-overflow: ellipsis;
             word-wrap: break-word;
             margin: 0;
-        }
-
-        p.card-text {
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+            cursor: pointer;
         }
 
         p.card-author {

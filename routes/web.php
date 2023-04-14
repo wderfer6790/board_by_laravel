@@ -58,7 +58,7 @@ Route::group([], function() {
     Route::post('/reply/{article_id}/{parent_id?}', [ReplyController::class, 'store'])
         ->name('replyStore')
         ->whereNumber(['article_id', 'parent_id']);
-    Route::match(['put', 'patch'], '/reply/{id}', [ReplyController::class, 'update`'])->name('replyUpdate');
+    Route::match(['put', 'patch'], '/reply/{id}', [ReplyController::class, 'update'])->name('replyUpdate');
     Route::delete('/reply/{id}', [ReplyController::class, 'destroy'])->name('replyDestroy');
 });
 

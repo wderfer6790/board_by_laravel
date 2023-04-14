@@ -68,7 +68,6 @@ class BoardController extends Controller
                 'id' => $row->id,
                 'author' => $row->user->name,
                 'subject' => $row->subject,
-                'content' => substr($row->content, 0, 256),
                 'likes' => $row->likes,
                 'views' => $row->views,
                 'updated_at' => date('y/m/d', strtotime($row->updated_at)),
@@ -126,6 +125,7 @@ class BoardController extends Controller
             // error handling
         }
 
+
         // morph sync
         $article->files()->sync($embedded_files);
 
@@ -148,23 +148,22 @@ class BoardController extends Controller
 
     public function article($id)
     {
-        $article = Article::with(["user:id,name", "files:id,path", 'replies' => function ($q) {
-            $q->with(['user' => function ($q) {
-                $q->with('file:id,path');
-            }, 'file:id,path']);
-        }])
-            ->where('id', $id)
-            ->first();
+            $article = Article::with(["user:id,name", "files:id,path", 'replies' => function ($q) {
+                $q->with(['user' => function ($q) {
+                    $q->with('file:id,path');
+                }, 'file:id,path']);
+            }])
+                ->where('id', $id)
+                ->first();
 
-        $content = unserialize($article->content);
-        array_walk_recursive($content, function (&$item, $key) {
-            if ($key === 'insert') {
-                $item = str_replace("\\n", "\n", $item);
-            }
-        });
-        $content = json_encode($content);
-
-        return view('article', compact('article', 'content'));
+            $content = unserialize($article->content);
+            array_walk_recursive($content, function (&$item, $key) {
+                if ($key === 'insert') {
+                    $item = str_replace("\\n", "\n", $item);
+                }
+            });
+            $content = json_encode($content);
+            return view('article', compact('article', 'content'));
     }
 
     public function edit($id)

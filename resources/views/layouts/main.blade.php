@@ -23,9 +23,8 @@
 
             @auth
             <div class="offset-1 col-2 dropdown text-left">
-                {{-- todo menu profile image --}}
                 <a href="#" id="user_btn" class="link-dark" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="{{ asset('storage/image/etc/dog.png') }}" width="50" height="50" class="rounded-circle">
+                    <img src="{{ $user_thumbnail }}" width="50" height="50" class="rounded-circle border border-secondary border-2">
                 </a>
                 <ul class="dropdown-menu bg-dark text-small" aria-labelledby="user_btn">
                     <li><a class="dropdown-item bg-dark link-light" href="{{ route('create') }}">New Article</a></li>
