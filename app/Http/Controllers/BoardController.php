@@ -74,7 +74,7 @@ class BoardController extends Controller
             ];
 
             $no_image = asset('storage/image/no_image.png');
-            $article['profile'] = $row->user->file->get(0)->count() > 0 ? asset($row->user->file->get(0)->path) : $no_image;
+            $article['profile'] = $row->user->file->count() > 0 ? asset($row->user->file->get(0)->path) : $no_image;
             $article['thumbnail'] = $row->files->count() > 0 ? asset($row->files->get(0)->path) : $no_image;
 
             $res['articles'][] = $article;
@@ -251,6 +251,17 @@ class BoardController extends Controller
             $res['msg'] = "잘못된 접근입니다.";
             goto sendRes;
         }
+
+        if (!$article = Article::find($id)) {
+            $res['msg'] = "삭제할 대상을 찾을 수 없습니다.";
+            goto sendRes;
+        }
+
+        $article->files()->delete();
+        $article->delete();
+
+        $res['res'] = true;
+        $res['msg'] = "삭제되었습니다.";
 
         sendRes:
         return response()->json($res);

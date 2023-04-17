@@ -6,8 +6,8 @@
         <div class="col">
             <div class="article-header">
                 <h1 class="article-subject mb-4">{{ $article->subject }}</h1>
-                <span class="author float-start"><img class="author-thumbnail rounded-circle"
-                                                      src="{{ $article->user->file->count() > 0 ? asset($article->user->file->get(0)->path) : 'no_thumbnail' }}"> {{ $article->user->name }}</span>
+                <span class="author float-start">
+                    <img class="author-thumbnail rounded-circle" src="{{ $article->user->file->count() > 0 ? asset($article->user->file->get(0)->path) : asset('storage/image/no_image.png') }}"> {{ $article->user->name }}</span>
                 <span class="write-date float-end">{{ $article->updated_at }}</span>
             </div>
         </div>

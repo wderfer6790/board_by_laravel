@@ -4,28 +4,28 @@
     <div class="row" style="padding-top: 8rem;">
         <label for="email" class="form-label col-md-2">email</label>
         <div class="col-md-10">
-            <input type="text" id="email" name="email" class="form-control" value="wderfer6790@nate.com">
+            <input type="text" id="email" name="email" class="form-control" value="">
             <div class="invalid-feedback" data-for="email"></div>
         </div>
     </div>
     <div class="row mt-3">
         <label for="username" class="form-label col-md-2">name</label>
         <div class="col-md-10">
-            <input type="text" id="username" name="username" class="form-control" value="sya">
+            <input type="text" id="username" name="username" class="form-control" value="">
             <div class="invalid-feedback" data-for="username"></div>
         </div>
     </div>
     <div class="row mt-3">
         <label for="password" class="form-label col-md-2">password</label>
         <div class="col-md-10">
-            <input type="password" id="password" name="password" class="form-control" value="qwer">
+            <input type="password" id="password" name="password" class="form-control" value="">
             <div class="invalid-feedback" data-for="password"></div>
         </div>
     </div>
     <div class="row mt-3">
         <label for="password_check" class="form-label col-md-2">password check</label>
         <div class="col-md-10">
-            <input type="password" id="password_check" name="password_check" class="form-control" value="qwer">
+            <input type="password" id="password_check" name="password_check" class="form-control" value="">
             <div class="invalid-feedback" data-for="password_check"></div>
         </div>
     </div>
