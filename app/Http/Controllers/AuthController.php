@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Validator, Hash, Mail};
 use App\Models\User;
-use App\Mail\VerifyEmail;
+use App\Mail\{VerifyEmail, ResetPassword};
 
 class AuthController extends Controller
 {
@@ -15,11 +15,6 @@ class AuthController extends Controller
             $res['msg'] = "잘못된 접근입니다.";
             goto sendRes;
         }
-//
-//        auth()->logout();
-//        $request->session()->invalidate();
-//        $request->session()->regenerateToken();
-//        goto sendRes;
 
         $data = $request->only(['email', 'password', 'remember']);
 
@@ -86,13 +81,14 @@ class AuthController extends Controller
             'username' => $data['username']
         ], [
             'email' => 'required|email',
-            'password' => 'required|regex:/[a-zA-Z]+/',
+            'password' => 'required|regex:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,32}$/',
             'password_check' => 'required|same:password',
             'username' => 'required|alpha_num|min:2'
         ], [
             'email.required' => "이메일을 입력해주세요.",
             'email.email' => "이메일 형식이 올바르지 않습니다.",
             'password.required' => "비밀번호를 입력해주세요.",
+            'password.regex' => "8자 이상 32자 이하 영문, 숫자, 특수문자(!@#$%^&*)를 혼합해주세요.",
             'password_check.required' => "비밀번호 확인을 입력해주세요.",
             'password_check.same' => "비밀번호와 비밀번호 확인이 일치하지 않습니다.",
             'username.required' => "사용할 이름을 입력해주세요.",
@@ -127,14 +123,18 @@ class AuthController extends Controller
     }
 
     public function verifyEmail(Request $request) {
-        $name = null;
         $user = User::whereRaw("SHA2(email, 256) = '" . $request->post('auth') . "'")->first();
-        if ($user) {
-            $user->email_verified_at = date("Y-m-d H:i:s");
-            $user->save();
-
-            $name = $user->name;
+        if (!$user) {
+            return view('alert', [
+                'to' => 'login',
+                'msg' => "잘못된 접근입니다."
+            ]);
         }
+
+        $user->email_verified_at = date("Y-m-d H:i:s");
+        $user->save();
+
+        $name = $user->name;
 
         return view('verifyEmail', ['name' => $name]);
     }
@@ -163,5 +163,91 @@ class AuthController extends Controller
         sendRes:
         return response()->json($res);
     }
+
+    public function forgetPassword(Request $request) {
+        $res = ['res' => false, 'msg' => ""];
+        if (!$request->isXmlHttpRequest() || !$email = $request->post('email')) {
+            $res['msg'] = "잘못된 접근입니다.";
+            goto sendRes;
+        }
+
+        if (!$user = User::where('email', $email)->first()) {
+            $res['msg'] = "가입된 정보를 찾을 수 없습니다.";
+            goto sendRes;
+        }
+
+        Mail::to($user)->send(new ResetPassword($user));
+
+        $res['res'] = true;
+        $res['msg'] = "비밀번호 재설정 이메일을 발송하였습니다.";
+
+        sendRes:
+        return response()->json($res);
+    }
+
+
+    public function resetPassword($auth) {
+        $email = User::whereRaw("SHA2(email, 256) = '{$auth}'")->value('email');
+        if (!$email) {
+            return view('alert', [
+                'to' => 'login',
+                'msg' => "잘못된 접근입니다."
+            ]);
+        }
+
+        return view('resetPassword', compact('auth', 'email'));
+    }
+
+
+    public function resetPasswordProcess(Request $request) {
+        $res = ['res' => false, 'msg' => ""];
+        if (!$request->isXmlHttpRequest()) {
+            $res['msg'] = "잘못된 접근입니다.";
+            goto sendRes;
+        }
+
+        $data = $request->only(['auth', 'password', 'password_check']);
+
+        $user = User::whereRaw("SHA2(email, 256) = '{$data['auth']}'")->first();
+        if (!$user) {
+            $res['msg'] = "사용자 정보를 찾을 수 없습니다.";
+            goto sendRes;
+        }
+
+        $validator = Validator::make([
+            'password' => $data['password'],
+            'password_check' => $data['password_check'],
+        ], [
+            'password' => 'required|regex:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,32}$/',
+            'password_check' => 'required|same:password',
+        ], [
+            'password.required' => "비밀번호를 입력해주세요.",
+            'password.regex' => "8자 이상 32자 이하 영문, 숫자, 특수문자(!@#$%^&*)를 혼합해주세요.",
+            'password_check.required' => "비밀번호 확인을 입력해주세요.",
+            'password_check.same' => "비밀번호와 비밀번호 확인이 일치하지 않습니다.",
+        ]);
+
+        // authentication
+        if ($validator->fails()) {
+            $res['msg'] = $validator->errors()->messages();
+            goto sendRes;
+        }
+
+        if (!$user->update(['password' => Hash::make($data['password'])])) {
+            $res['msg'] = "비밀번호 재설정 중 문제가 발생하였습니다.";
+            goto sendRes;
+        }
+
+        $res['res'] = true;
+        $res['msg'] = "비밀번호가 변경되었습니다.";
+
+        sendRes:
+        return response()->json($res);
+    }
+
+
+
+
+
 
 }

@@ -16,10 +16,10 @@
         </div>
     </div>
     <div class="row mt-5">
-        <div class="col-md-2 float-end">
-            <div class="form-check form-switch">
-                <input type="checkbox" class="form-check-input" role="switch" id="remember" name="remember" checked>
-                <label class="form-check-label" for="remember">Remember</label>
+        <div class="col">
+            <div class="float-end form-check form-switch">
+                <input type="checkbox" class="form-check-input" role="switch" id="remember" name="remember">
+                <label class="form-check-label" for="remember">로그인 유지하기</label>
             </div>
         </div>
     </div>
@@ -29,9 +29,10 @@
         </div>
     </div>
 
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <input type="button" id="sign_in_btn" class="btn btn-dark form-control" value="sign in">
+    <div class="row mt-4">
+        <div class="col-md-12 text-end">
+            <a href="{{ route('signin') }}" class="link-dark">sign in?</a>
+            or <a href="{{ route('forgetPassword') }}" class="link-dark">forget password?</a>
         </div>
     </div>
 @endsection
@@ -85,11 +86,14 @@ $(document).ready(function() {
             }
         });
     });
-
-    // sign in
-    $("#sign_in_btn").click(function() {
-        document.location.href = '{{ route('signin') }}';
-    });
 });
 </script>
+@endsection
+
+@section('style')
+    <style>
+        .form-check-input, .form-check-label {
+            cursor: pointer;
+        }
+    </style>
 @endsection

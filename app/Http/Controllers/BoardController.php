@@ -156,6 +156,9 @@ class BoardController extends Controller
                 ->where('id', $id)
                 ->first();
 
+
+            $article->update(['views' => $article->views + 1]);
+
             $content = unserialize($article->content);
             array_walk_recursive($content, function (&$item, $key) {
                 if ($key === 'insert') {

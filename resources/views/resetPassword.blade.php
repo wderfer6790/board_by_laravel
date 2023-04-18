@@ -4,15 +4,7 @@
     <div class="row" style="padding-top: 8rem;">
         <label for="email" class="form-label col-md-2">email</label>
         <div class="col-md-10">
-            <input type="text" id="email" name="email" class="form-control" value="">
-            <div class="invalid-feedback" data-for="email"></div>
-        </div>
-    </div>
-    <div class="row mt-3">
-        <label for="username" class="form-label col-md-2">name</label>
-        <div class="col-md-10">
-            <input type="text" id="username" name="username" class="form-control" value="">
-            <div class="invalid-feedback" data-for="username"></div>
+            {{ $email }}
         </div>
     </div>
     <div class="row mt-3">
@@ -31,7 +23,7 @@
     </div>
     <div class="row mt-3">
         <div class="col-md-12">
-            <input type="button" id="signin_btn" class="btn btn-dark form-control" value="sign in">
+            <input type="button" id="reset_pw_btn" class="btn btn-dark form-control" value="reset password">
         </div>
     </div>
 @endsection
@@ -46,19 +38,18 @@ $(document).ready(function() {
     });
 
     let processing = false;
-    $("#signin_btn").click(function() {
+    $("#reset_pw_btn").click(function() {
         if (processing) return false;
 
-        if (!confirm("작성한 내용으로 가입하시겠습니까?")) return false;
+        if (!confirm("비밀번호를 재설정 하시겠습니까?")) return false;
 
         processing = true;
 
         $.ajax({
-            url: '{{ route('signinProcess') }}',
+            url: '{{ route('resetPasswordProcess') }}',
             type: 'post',
             data: {
-                'email': $("#email").val().trim(),
-                'username': $("#username").val().trim(),
+                'auth': '{{ $auth }}',
                 'password': $("#password").val().trim(),
                 'password_check': $("#password_check").val().trim(),
             },
