@@ -156,6 +156,9 @@ class BoardController extends Controller
                 ->where('id', $id)
                 ->first();
 
+            if (!$article) {
+                return view('alert', ['msg' => "게시글 정보를 찾을 수 없습니다.", 'to' => 'list']);
+            }
 
             $article->update(['views' => $article->views + 1]);
 

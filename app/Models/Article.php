@@ -12,7 +12,7 @@ class Article extends Model
     protected $table = 'article';
 
     protected $fillable = [
-        'user_id', 'subject', 'content', 'view', 'like', 'create_at', 'update_at'
+        'user_id', 'subject', 'content', 'views', 'likes', 'create_at', 'update_at'
     ];
 
     protected $dateFormat = 'Y-m-d H:i:s';

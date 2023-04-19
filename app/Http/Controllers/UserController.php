@@ -60,7 +60,7 @@ class UserController extends Controller
             goto sendRes;
         }
 
-        if ($data['uploaded_thumbnail_id']) {
+        if (isset($data['uploaded_thumbnail_id']) && $data['uploaded_thumbnail_id']) {
             $user->file()->sync([$data['uploaded_thumbnail_id']]);
         }
 

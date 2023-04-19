@@ -78,7 +78,7 @@
                     success: function (data) {
                         if (data.res) {
                             alert(data.msg);
-
+                            location.reload();
                         } else {
                             if (typeof data.msg === 'string') {
                                 alert(data.msg);

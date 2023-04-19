@@ -56,5 +56,12 @@
         <input type="button" class="confirm_btn" onclick="location.href='{{ route($to) }}'" value="확 인">
     </div>
 </div>
+<script>
+    document.addEventListener('keydown', function(e) {
+        if (e.keyCode === 13) {
+            location.href='{{ route($to) }}';
+        }
+    });
+</script>
 </body>
 </html>
