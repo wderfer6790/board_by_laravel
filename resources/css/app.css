@@ -1,0 +1,35 @@
+@charset "utf-8";
+
+/* layout */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+
+#body_wrapper {
+    height: auto;
+    min-height: 100%;
+    position: relative;
+    padding-bottom: 3.5rem
+}
+
+#content_wrapper {
+    min-height: 100%;
+    padding-top: 4rem;
+}
+
+#footer {
+    width: 100%;
+    height: 3.5rem;
+    padding-top: 1rem;
+    background-color: #D8D8D8;
+    position: relative;
+    transform: translateY(-100%);
+}

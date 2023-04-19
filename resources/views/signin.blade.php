@@ -1,7 +1,8 @@
 @extends('layouts.login')
 
 @section('content')
-    <div class="row" style="padding-top: 8rem;">
+    <h1 class="border-bottom mb-5">SIGN IN</h1>
+    <div class="row">
         <label for="email" class="form-label col-md-2">email</label>
         <div class="col-md-10">
             <input type="text" id="email" name="email" class="form-control" value="">
@@ -29,9 +30,14 @@
             <div class="invalid-feedback" data-for="password_check"></div>
         </div>
     </div>
-    <div class="row mt-3">
+    <div class="row mt-5">
         <div class="col-md-12">
             <input type="button" id="signin_btn" class="btn btn-dark form-control" value="sign in">
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-12 text-end">
+            <a href="{{ route('login') }}" class="link-dark">return login</a>
         </div>
     </div>
 @endsection

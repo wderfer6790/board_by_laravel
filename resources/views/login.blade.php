@@ -1,7 +1,8 @@
 @extends('layouts.login')
 
 @section('content')
-    <div class="row" style="padding-top: 8rem;">
+    <h1 class="border-bottom mb-5">LOGIN</h1>
+    <div class="row">
         <label for="email" class="form-label col-md-2">email</label>
         <div class="col-md-10">
             <input type="text" id="email" name="email" class="form-control" value="">
@@ -15,7 +16,7 @@
             <div class="invalid-feedback" data-for="password"></div>
         </div>
     </div>
-    <div class="row mt-5">
+    <div class="row mt-3">
         <div class="col">
             <div class="float-end form-check form-switch">
                 <input type="checkbox" class="form-check-input" role="switch" id="remember" name="remember">
@@ -23,7 +24,7 @@
             </div>
         </div>
     </div>
-    <div class="row mt-3">
+    <div class="row mt-5">
         <div class="col-md-12">
             <input type="button" id="login_btn" class="btn btn-dark form-control" value="login">
         </div>

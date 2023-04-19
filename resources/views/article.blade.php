@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- article header -->
-    <div class="row bg-light" style="padding-top: 5em;">
+    <div class="row bg-light">
         <div class="col">
             <div class="article-header">
                 <h1 class="article-subject mb-4">{{ $article->subject }}</h1>

@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('content')
+    <h1 class="border-bottom mb-5">PROFILE</h1>
     <div class="row">
         <label for="email" class="form-label col-md-2">E-MAIL</label>
         <div class="col-md-10">

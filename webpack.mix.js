@@ -15,15 +15,21 @@ const mix = require('laravel-mix');
 //     .css('node_modules/bootstrap/dist/css/bootstrap.css', 'public/css/app.css');
 
 mix.scripts([
-        'node_modules/jquery/dist/jquery.js',
-        'node_modules/bootstrap/dist/js/bootstrap.js',
-        'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
+        'resources/js/app.js',
     ], 'public/js/app.js')
+    .scripts([
+        'node_modules/jquery/dist/jquery.js',
+    ], 'public/js/jquery.js')
+    .scripts([
+        'node_modules/bootstrap/dist/js/bootstrap.js',
+        'node_modules/bootstrap/dist/js/bootstrap.bundle.js'
+    ], 'public/js/bootstrap.js')
+    .styles([
+        'resources/css/app.css',
+    ], 'public/css/app.css')
     .styles([
         'node_modules/bootstrap/dist/css/bootstrap.css',
         'node_modules/bootstrap/dist/css/bootstrap-grid.css',
         'node_modules/bootstrap/dist/css/bootstrap-reboot.css',
         'node_modules/bootstrap/dist/css/bootstrap-utilities.css',
-
-
-    ], 'public/css/app.cs');
+    ], 'public/css/bootstrap.css');
