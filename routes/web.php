@@ -50,6 +50,9 @@ Route::group([], function() {
     Route::post('/create', [BoardController::class, 'store'])->name('store')->middleware('auth');
 
     Route::get('/{id}', [BoardController::class, 'article'])->name('article');
+    Route::post('/{id}/{type}', [BoardController::class, 'increaseCount'])
+        ->where('type', "(views|likes)")
+        ->name('increaseCount');
 
     Route::get('/{id}/edit', [BoardController::class, 'edit'])->name('edit')->middleware('auth');
     Route::match(['put', 'patch'], '/{id}/edit', [BoardController::class, 'update'])->name('update')->middleware('auth');

@@ -17,12 +17,12 @@ body::-webkit-scrollbar {
     height: auto;
     min-height: 100%;
     position: relative;
-    padding-bottom: 3.5rem
+    padding-top: 6rem;
+    padding-bottom: 8rem;
 }
 
 #content_wrapper {
     min-height: 100%;
-    padding-top: 4rem;
 }
 
 #footer {

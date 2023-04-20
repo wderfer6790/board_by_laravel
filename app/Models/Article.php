@@ -21,17 +21,48 @@ class Article extends Model
         'updated_at' => 'datetime:Y-m-d',
     ];
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('App\Models\User', 'user_id', 'id');
     }
 
-    public function replies() {
+    public function replies()
+    {
         return $this->hasMany('App\Models\Reply', 'article_id')
             ->whereNull('parent_id');
     }
 
-    public function files() {
+    public function files()
+    {
         return $this->morphToMany(File::class, 'fileable', 'fileable');
+    }
+
+    /**
+     * 조회수, 좋아요수 업데이트
+     *
+     * @param $id
+     * @param $type
+     * @return void
+     * @throws Exception
+     * @return int
+     */
+    public static function increaseCount($id, $type) {
+        if (!in_array($type, ['views', 'likes'])) {
+            throw new \App\Models\Exception("increaseCount: type invalid");
+        }
+
+        if (!$article = Article::find($id)) {
+            throw new \App\Models\Exception("increaseCount: article not found");
+        }
+
+        $article->timestamps = false;
+        if (!$article->update([
+            $type => $article->{$type} + 1
+        ])) {
+            throw new \App\Models\Exception("increaseCount: article {$type} update fail");
+        }
+
+        return $article->{$type};
     }
 
 }

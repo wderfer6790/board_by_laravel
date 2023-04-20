@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- article header -->
-    <div class="row bg-light" style="padding-top: 5rem;">
+    <div class="row bg-light">
         <div class="col">
             <div class="article-header">
                 <h3>제목</h3>
@@ -238,9 +238,22 @@
             border-radius: 0.25rem 0.25rem 0 0;
         }
 
-        /*.ql-editor {
+        .ql-editor {
             height: 30rem;
             overflow-y: scroll;
-        }*/
+        }
+
+        .ql-editor::-webkit-scrollbar {
+            width: 0.5rem;
+        }
+
+        .ql-editor::-webkit-scrollbar-thumb {
+            border-radius: 5px;
+            width: 0.5rem;
+            background-color: #bdbdbd;
+        }
+
+        .ql-editor::-webkit-scrollbar-track {
+        }
     </style>
 @endsection

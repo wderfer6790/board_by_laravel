@@ -32,8 +32,14 @@
 
             // article link
             $(document).on('click', "h5.card-title", function () {
+                const id = $(this).data('id');
+
+                let viewsUrl = '{{ route('increaseCount', ['id' => ':id', 'type' => 'views']) }}';
+                viewsUrl = viewsUrl.replace(':id', id);
+                $.post(viewsUrl);
+
                 let articleUrl = "{{ route('article', ":id") }}";
-                articleUrl = articleUrl.replace(':id', $(this).data('id'));
+                articleUrl = articleUrl.replace(':id', id);
                 location.href = articleUrl + "?total=" + total + "&sort=" + sort + "&search=" + search;
             });
 
@@ -70,6 +76,7 @@
                         search: search,
                         search_first: search_first,
                     },
+                    dataType: 'json',
                     success: function (data) {
                         init = false;
                         total = data.total;

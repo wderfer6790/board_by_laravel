@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{User, Article, File};
+use App\Models\{Exception, User, Article, File};
 use Illuminate\Support\Facades\{File as FileInfo};
 
 class BoardController extends Controller
@@ -95,7 +95,6 @@ class BoardController extends Controller
     public function store(Request $request)
     {
         $res = ['res' => false, 'msg' => ""];
-
         if (!$request->isXmlHttpRequest()) {
             $res['msg'] = "잘못된 접근입니다.";
             goto sendRes;
@@ -146,6 +145,27 @@ class BoardController extends Controller
         return response()->json($res);
     }
 
+    public function increaseCount(Request $request, $id, $type) {
+        $res = ['res' => false, 'msg' => ""];
+        if (!$request->isXmlHttpRequest()) {
+            $res['msg'] = "잘못된 접근입니다.";
+            goto sendRes;
+        }
+
+        try {
+            $cnt = Article::increaseCount($id, $type);
+        } catch (\App\Models\Exception $e) {
+            $res['msg'] = "업데이트 중 문제가 발생하였습니다.";
+            goto sendRes;
+        }
+
+        $res['res'] = true;
+        $res['cnt'] = $cnt;
+
+        sendRes:
+        return response()->json($res);
+    }
+
     public function article($id)
     {
             $article = Article::with(["user:id,name", "files:id,path", 'replies' => function ($q) {
@@ -159,8 +179,6 @@ class BoardController extends Controller
             if (!$article) {
                 return view('alert', ['msg' => "게시글 정보를 찾을 수 없습니다.", 'to' => 'list']);
             }
-
-            $article->update(['views' => $article->views + 1]);
 
             $content = unserialize($article->content);
             array_walk_recursive($content, function (&$item, $key) {
