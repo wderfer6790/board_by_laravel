@@ -40,7 +40,7 @@ class ReplyController extends Controller
         $res['author'] = $user->name;
         $res['author_thumbnail'] = $user->file->count() > 0 ? asset($user->file->get(0)->path) : asset('storage/image/no_image.png');
         $res['publish_date'] = date('H:i y/m/d', strtotime($reply->updated_at));
-        $res['content'] = $reply->content;
+        $res['content'] = nl2br($reply->content);
         $res['image'] = $reply->file->count() > 0 ? asset($reply->file->get(0)->path) : "";
 
         sendRes:
@@ -73,7 +73,7 @@ class ReplyController extends Controller
         }
 
         $res['res'] = true;
-        $res['content'] = $reply->content;
+        $res['content'] = nl2br($reply->content);
 
         sendRes:
         return response()->json($res);

@@ -48,7 +48,17 @@ $(document).ready(function() {
     });
 
     let processing = false;
+    $("#password").on('keyup', function(e) {
+        if (e.keyCode === 13) {
+            login();
+        }
+    });
+
     $("#login_btn").click(function() {
+        login();
+    });
+
+    function login() {
         if (processing) {
             return false;
         }
@@ -86,7 +96,7 @@ $(document).ready(function() {
                 console.log(xhr);
             }
         });
-    });
+    }
 });
 </script>
 @endsection

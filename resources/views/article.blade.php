@@ -79,7 +79,7 @@
 
                         <p class="reply-content m-3">
                             {!! $reply->file->count() > 0 ? "<img src='" . asset($reply->file->get(0)->path) . "' class='reply_img'><br>" : "" !!}
-                            {{ $reply->content }}
+                            {!! nl2br($reply->content) !!}
                         </p>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                                 </div>
                                 <p class="reply-content m-3">
                                     {!! $child->file->count() > 0 ? "<img src='" . asset($child->file->get(0)->path) . "' class='reply_img'><br>" : "" !!}
-                                    {{ $child->content }}
+                                    {!! nl2br($child->content) !!}
                                 </p>
                             </div>
                         </div>

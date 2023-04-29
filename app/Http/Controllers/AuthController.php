@@ -16,12 +16,13 @@ class AuthController extends Controller
             goto sendRes;
         }
 
-        $data = $request->only(['email', 'password', 'remember']);
+        $email = $request->input('email');
+        $password = $request->input('password');
 
         // validate
         $validator = Validator::make([
-            'email' => $data['email'],
-            'password' => $data['password']
+            'email' => $email,
+            'password' => $password
         ], [
             'email' => 'required|email',
             'password' => 'required'
@@ -38,10 +39,10 @@ class AuthController extends Controller
         }
 
         if(auth()->attempt([
-            'email' => $data['email'],
-            'password' => $data['password']
-        ], $data['remember'] ?? false)) {
-            $user = User::where('email', $data['email'])->first();
+            'email' => $email,
+            'password' => $password
+        ], $request->boolean('remember'))) {
+            $user = User::where('email', $email)->first();
             if (!$user->email_verified_at) {
                 Mail::to($user)->send(new VerifyEmail($user));
                 $res['msg'] = '인증 이메일을 발송하였습니다. 이메일 인증 후 로그인 해주세요.';
@@ -244,10 +245,6 @@ class AuthController extends Controller
         sendRes:
         return response()->json($res);
     }
-
-
-
-
 
 
 }

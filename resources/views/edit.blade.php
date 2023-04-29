@@ -99,10 +99,12 @@
                     data: article_data,
                     dataType: 'json',
                     success: function (data) {
-                        alert(data.msg);
-                        if (data.res) {
-                            location.href = '{{ route('article', $article->id) }}' + location.search;
+                        if (!data.res) {
+                            alert(data.msg);
+                            return false;
                         }
+
+                        location.href = '{{ route('article', $article->id) }}' + location.search;
                     },
                     error: function (xhr) {
                         console.log(xhr);
@@ -115,6 +117,11 @@
                 let file = $("#upload_file");
                 if (file.val().length === 0) {
                     alert("파일을 선택해주세요.");
+                    return false;
+                }
+
+                if (['image/jpeg', 'image/png', 'image/gif', 'image/webp'].indexOf(file.get(0).files[0].type) < 0) {
+                    alert('jpg, jpeg, png, gif, webp 형식의 파일만 업로드 가능합니다.');
                     return false;
                 }
 
