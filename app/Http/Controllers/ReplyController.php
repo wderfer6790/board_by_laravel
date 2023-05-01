@@ -60,7 +60,7 @@ class ReplyController extends Controller
         }
 
         $reply = Reply::find($id);
-        if (!$reply) {
+        if (!$reply || $reply->trashed()) {
             $res['msg'] = "수정할 댓글 정보를 찾지 못하였습니다.";
             goto sendRes;
         }
@@ -86,16 +86,17 @@ class ReplyController extends Controller
             goto sendRes;
         }
 
-        if (!$reply = Reply::find($id)) {
+        $reply = Reply::find($id);
+        if (!$reply || $reply->trashed()) {
             $res['msg'] = "삭제할 대상을 찾을 수 없습니다.";
             goto sendRes;
         }
 
         $reply->file()->delete();
-        $reply->child()->delete();
         $reply->delete();
 
         $res['res'] = true;
+        $res['disp'] = $reply->child->count() > 0 || !is_null($reply->parent_id);
 
         sendRes:
         return response()->json($res);

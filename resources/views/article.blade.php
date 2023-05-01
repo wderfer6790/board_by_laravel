@@ -7,7 +7,8 @@
             <div class="article-header">
                 <h1 class="article-subject mb-4">{{ $article->subject }}</h1>
                 <span class="author float-start">
-                    <img class="author-thumbnail rounded-circle" src="{{ $article->user->file->count() > 0 ? asset($article->user->file->get(0)->path) : asset('storage/image/no_image.png') }}"> {{ $article->user->name }}</span>
+                    <img class="author-thumbnail rounded-circle"
+                         src="{{ $article->user->file->count() > 0 ? asset($article->user->file->get(0)->path) : asset('storage/image/no_image.png') }}"> {{ $article->user->name }}</span>
                 <span class="write-date float-end">{{ $article->updated_at }}</span>
             </div>
         </div>
@@ -23,42 +24,47 @@
     </div>
     <hr class="mt-5">
     @displayOption($article->user_id)
-        <p class="text-end">
-            <a id="edit_btn" class="fw-bold">edit</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a id="delete_btn" class="fw-bold">delete</a>
-        </p>
+    <p class="text-end">
+        <a id="edit_btn" class="fw-bold">edit</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a id="delete_btn" class="fw-bold">delete</a>
+    </p>
     @enddisplayOption
 
     <!-- article replay -->
     <div class="row bg-light mt-5">
         <div class="col reply_container">
             @auth
-            <div class="reply_input_box row m-3">
-                <div class="col-md-1 text-start">
-                    <img src="{{ $user_thumbnail }}" class="rounded-circle author-thumbnail">
+                <div class="reply_input_box row m-3">
+                    <div class="col-md-1 text-start">
+                        <img src="{{ $user_thumbnail }}" class="rounded-circle author-thumbnail">
+                    </div>
+                    <div class="col-md-9">
+                        <textarea class="reply_input" rows="1"></textarea>
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <a href="javascript:void(0);" class="reply_btn">reply</a>
+                        &nbsp;
+                        <a href="javascript:void(0);" class="reply_cancel_btn">cancel</a>
+                    </div>
                 </div>
-                <div class="col-md-9">
-                    <textarea class="reply_input" rows="1"></textarea>
+
+                <div class="reply_update_box row mt-3 d-none">
+                    <div class="col-md-10">
+                        <textarea class="reply_input" rows="1"></textarea>
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <a href="javascript:void(0);" class="reply_update_btn">update</a>
+                        &nbsp;
+                        <a href="javascript:void(0);" class="reply_cancel_btn">cancel</a>
+                    </div>
                 </div>
-                <div class="col-md-2 text-end">
-                    <a href="javascript:void(0);" class="reply_btn">reply</a>
-                    &nbsp;
-                    <a href="javascript:void(0);" class="reply_cancel_btn">cancel</a>
-                </div>
-            </div>
-            <div class="reply_update_box row mt-3 d-none">
-                <div class="col-md-10">
-                    <textarea class="reply_input" rows="1"></textarea>
-                </div>
-                <div class="col-md-2 text-end">
-                    <a href="javascript:void(0);" class="reply_update_btn">update</a>
-                    &nbsp;
-                    <a href="javascript:void(0);" class="reply_cancel_btn">cancel</a>
-                </div>
-            </div>
-            <hr class="m-5">
+                <hr class="m-5">
             @endauth
 
             @forelse($article->replies as $reply)
+                @if($reply->trashed() && $reply->child->count() === 0)
+                    @continue
+                @endif
+
                 <div class="reply reply_box m-5">
                     <div class="writer bg-light text-start">
                         <div class="float-start">
@@ -67,23 +73,29 @@
                             <small>{{ date("H:i y/m/d", strtotime($reply->updated_at)) }}</small>
                         </div>
 
-                        <div class="float-end">
-                            @auth
-                            <a class="nested_reply_btn" data-id="{{ $reply->id }}">reply</a>
-                            @endauth
-                            @displayOption($reply->user_id)
+                        <div class="reply_option_box float-end">
+                            @if(!$reply->trashed())
+                                @auth
+                                    <a class="nested_reply_btn" data-id="{{ $reply->id }}">reply</a>
+                                @endauth
+                                @displayOption($reply->user_id)
                                 &nbsp;<a class="reply_edit_btn" data-id="{{ $reply->id }}">edit</a>
                                 &nbsp;<a class="reply_delete_btn" data-id="{{ $reply->id }}">delete</a>
-                            @enddisplayOption
+                                @enddisplayOption
+                            @endif
                         </div>
 
-                        <p class="reply-content m-3">
-                            {!! $reply->file->count() > 0 ? "<img src='" . asset($reply->file->get(0)->path) . "' class='reply_img'><br>" : "" !!}
-                            {!! nl2br($reply->content) !!}
+                        <p class="reply_content m-3">
+                            @if($reply->trashed())
+                                <span class="text-warning">삭제된 댓글입니다.</span>
+                            @else
+                                {!! $reply->file->count() > 0 ? "<img src='" . asset($reply->file->get(0)->path) . "' class='reply_img'><br>" : "" !!}
+                                {!! nl2br($reply->content) !!}
+                            @endif
                         </p>
                     </div>
                 </div>
-                @if($reply->child && $reply->child->count() > 0)
+                @if($reply->child->count() > 0)
                     @foreach($reply->child as $child)
                         <hr class="m-5">
                         <div class="reply-child reply_box m-5">
@@ -94,18 +106,25 @@
                                     <small>{{ date("H:i y/m/d", strtotime($child->updated_at)) }}</small>
                                 </div>
 
-                                <div class="float-end">
-                                    @auth
-                                    <a class="nested_reply_btn" data-id="{{$reply->id}}">reply</a>
-                                    @endauth
-                                    @displayOption($child->user_id)
+                                <div class="reply_option_box float-end">
+                                    @if(!$child->trashed())
+                                        @auth
+                                            <a class="nested_reply_btn" data-id="{{$reply->id}}">reply</a>
+                                        @endauth
+
+                                        @displayOption($child->user_id)
                                         &nbsp;<a class="reply_edit_btn" data-id="{{$child->id}}">edit</a>
                                         &nbsp;<a class="reply_delete_btn" data-id="{{$child->id}}">delete</a>
-                                    @enddisplayOption
+                                        @enddisplayOption
+                                    @endif
                                 </div>
-                                <p class="reply-content m-3">
-                                    {!! $child->file->count() > 0 ? "<img src='" . asset($child->file->get(0)->path) . "' class='reply_img'><br>" : "" !!}
-                                    {!! nl2br($child->content) !!}
+                                <p class="reply_content m-3">
+                                    @if($child->trashed())
+                                        <span class="text-warning">삭제된 댓글입니다.</span>
+                                    @else
+                                        {!! $child->file->count() > 0 ? "<img src='" . asset($child->file->get(0)->path) . "' class='reply_img'><br>" : "" !!}
+                                        {!! nl2br($child->content) !!}
+                                    @endif
                                 </p>
                             </div>
                         </div>
@@ -165,13 +184,13 @@
             });
 
             // reply input auto height
-            $(document).on('keyup', 'textarea.reply_input', function() {
+            $(document).on('keyup', 'textarea.reply_input', function () {
                 $(this).css('height', 'auto');
                 $(this).css('height', $(this).prop('scrollHeight') + 'px');
             });
 
             // nested reply input display
-            $(document).on('click', 'a.nested_reply_btn', function() {
+            $(document).on('click', 'a.nested_reply_btn', function () {
                 let reply_input_box = $("div.reply_input_box").filter(':first').clone();
 
                 reply_input_box.find('textarea.reply_input').val('');
@@ -182,7 +201,7 @@
             });
 
             // reply input cancel
-            $(document).on('click', 'a.reply_cancel_btn', function() {
+            $(document).on('click', 'a.reply_cancel_btn', function () {
                 if (typeof $(this).data('id') !== 'undefined') {
                     $(this).parent().parent().remove();
                 } else {
@@ -242,7 +261,7 @@
                         let reply_delete_btn = $("<a class='reply_delete_btn' data-id='" + data.id + "'>delete</a>");
                         div_option.append(nested_reply_btn, "&nbsp;&nbsp;", reply_edit_btn, "&nbsp;&nbsp;", reply_delete_btn);
 
-                        let reply_content = $("<p class='reply-content m-3'>" + data.content + "</p>");
+                        let reply_content = $("<p class='reply_content m-3'>" + data.content + "</p>");
                         let reply_image = data.image ? $("<img src='" + data.image + "' class='reply_img'>") : "";
                         reply_content.prepend(reply_image);
 
@@ -268,12 +287,12 @@
             });
 
             // reply edit display
-            $(document).on('click', 'a.reply_edit_btn', function() {
+            $(document).on('click', 'a.reply_edit_btn', function () {
                 let reply_box = $(this).parents('div.reply_box');
                 let reply_update_box = $("div.reply_update_box").filter(':first').clone();
                 let reply_input = reply_update_box.find('textarea.reply_input');
 
-                reply_input.val(reply_box.find('p.reply-content').text().trim());
+                reply_input.val(reply_box.find('p.reply_content').text().trim());
 
                 reply_update_box.find('a.reply_update_btn').data('id', $(this).data('id'));
                 reply_update_box.find('a.reply_cancel_btn').data('id', $(this).data('id'));
@@ -285,7 +304,7 @@
             });
 
             // reply edit
-            $(document).on('click', 'a.reply_update_btn', function() {
+            $(document).on('click', 'a.reply_update_btn', function () {
                 let btn = $(this);
                 let reply = btn.parents('div.reply_update_box').find('.reply_input');
                 if (reply.val().trim().length === 0) {
@@ -312,7 +331,7 @@
                             alert('msg');
                             return false;
                         }
-                        btn.parents('div.reply_box').find('p.reply-content').text(data.content);
+                        btn.parents('div.reply_box').find('p.reply_content').text(data.content);
                         reply.parents('div.reply_update_box').remove();
                     },
                     error: function (xhr) {
@@ -323,7 +342,7 @@
             });
 
             // reply delete
-            $(document).on('click', 'a.reply_delete_btn', function() {
+            $(document).on('click', 'a.reply_delete_btn', function () {
                 if (!confirm('댓글을 삭제하시겠습니까?')) {
                     return false;
                 }
@@ -342,10 +361,18 @@
                             return false;
                         }
 
-                        if (parent) {
+                        if (data.disp) {
+                            const reply_box = del_btn.parents('div.reply_box');
+                            const reply_content = reply_box.find('p.reply_content');
+                            reply_content.empty();
+                            reply_content.append($("<span class='text-warning'>삭제된 댓글입니다.</span>"));
+                            reply_box.find('div.reply_option_box').remove();
+
+                        } else if (parent) {
                             let replies = $(`a.nested_reply_btn[data-id=${parent_id}]`).parents('div.reply_box');
                             replies.prev().remove();
                             replies.remove();
+
                         } else {
                             let reply = del_btn.parents('div.reply_box');
                             reply.prev().remove(); // remove hr tag
@@ -358,7 +385,6 @@
                     }
                 });
             });
-
 
 
         });
@@ -399,7 +425,7 @@
             font-size: 0.7rem;
         }
 
-        p.reply-content {
+        p.reply_content {
             clear: both;
         }
 
@@ -418,6 +444,7 @@
             color: #bdbdbd;
             cursor: pointer;
         }
+
         a.reply_btn:hover, a.reply_update_btn, a.reply_cancel_btn:hover {
             color: #212529;
         }

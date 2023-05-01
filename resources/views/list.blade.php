@@ -92,7 +92,7 @@
                             const container = $("div.card-list");
 
                             $.each(data.articles, function (k, article) {
-                                let card = $("<div class='card col-md-3'>");
+                                let card = $("<div class='card col-md-3 col-sm-12'>");
                                 let cardImage = $("<img src='" + article.thumbnail + "' class='card-img-top article-thumbnail'>");
                                 let cardBody = $("<div class='card-body'>");
                                 let cardTitle = $("<h5 class='card-title' data-id='" + article.id + "'>" + article.subject + "</h5>");

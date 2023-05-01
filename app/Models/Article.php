@@ -29,6 +29,7 @@ class Article extends Model
     public function replies()
     {
         return $this->hasMany('App\Models\Reply', 'article_id')
+            ->withTrashed()
             ->whereNull('parent_id');
     }
 
