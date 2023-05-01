@@ -255,7 +255,7 @@
                         let publish_date = $("<small>" + data.publish_date + "</small>");
                         div_ahtor.append(author_thumbnail, "&nbsp;", data.author, "&nbsp;", publish_date);
 
-                        let div_option = $("<div class='float-end'></div>");
+                        let div_option = $("<div class='reply_option_box float-end'></div>");
                         let nested_reply_btn = $("<a class='nested_reply_btn' data-id='" + data.parent_id + "'>reply</a>");
                         let reply_edit_btn = $("<a class='reply_edit_btn' data-id='" + data.id + "'>edit</a>");
                         let reply_delete_btn = $("<a class='reply_delete_btn' data-id='" + data.id + "'>delete</a>");
