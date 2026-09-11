@@ -74,3 +74,8 @@ Route::middleware('auth')->group(function() {
     Route::post('/file', [FileController::class, 'upload'])->name('upload');
     Route::delete('/file/{id}/delete', [FileController::class, 'delete'])->name('delete');
 });
+
+// test
+Route::get('/test', function() {
+    return "TEST HSP";
+});
