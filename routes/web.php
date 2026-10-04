@@ -79,3 +79,19 @@ Route::middleware('auth')->group(function() {
 Route::get('/test', function() {
     return "TEST HSP";
 });
+
+Route::get('/db-check', function () {
+    return [
+        'host' => config('database.connections.mysql.host'),
+        'database' => config('database.connections.mysql.database'),
+        'username' => config('database.connections.mysql.username'),
+        'actual_database' => DB::connection()->getDatabaseName(),
+        'post_count' => DB::table('article')->count(),
+        'hostname' => gethostname(),
+        'php_sapi' => PHP_SAPI,
+        'server_addr' => $_SERVER['SERVER_ADDR'] ?? null,
+        'mysql_ip' => gethostbyname(
+            config('database.connections.mysql.host')
+        ),
+    ];
+});
