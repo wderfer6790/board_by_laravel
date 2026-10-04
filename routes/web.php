@@ -80,6 +80,9 @@ Route::get('/test', function() {
     return "TEST HSP";
 });
 
+/*
+ * 임시 디버깅 라우터
+ *
 Route::get('/db-check', function () {
     return [
         'host' => config('database.connections.mysql.host'),
@@ -94,4 +97,4 @@ Route::get('/db-check', function () {
             config('database.connections.mysql.host')
         ),
     ];
-});
+});*/
