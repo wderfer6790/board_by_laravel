@@ -1,4 +1,8 @@
 #### 2023년도에 구현한 게시판 웹 애플리케이션을 새로운 개발 환경에 맞게 Laravel Framework 버전을 업데이트 하였습니다.
+>
+> 호스팅 사이트: https://laravel.wderfer6790.click    
+> 
+> AWS Route53 도메인 구입 및 AWS EC2 인스턴스에 세팅
 
 ## 주요 구현 및 검증 내용
 
