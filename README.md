@@ -1,64 +1,53 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+#### 2023년도에 구현한 게시판 웹 애플리케이션을 새로운 개발 환경에 맞게 Laravel Framework 버전을 업데이트 하였습니다.
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 주요 구현 및 검증 내용
 
-## About Laravel
+- **회원가입 및 이메일 발송**: 회원가입 과정과 Gmail SMTP를 이용한 인증 메일 발송 동작 확인
+- **프로필 이미지 업로드**: 업로드된 이미지를 저장하고 웹에서 접근할 수 있도록 스토리지 경로 설정
+- **데이터베이스 연동**: MySQL 연결, Laravel 마이그레이션 및 모델 팩토리를 이용한 테스트 데이터 생성
+- **게시판 애플리케이션**: Laravel 기반 게시판 프로젝트의 동작과 유지보수
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 기존 기술 스택
+| 구분 | 기술              |
+| --- |-----------------|
+| Backend | PHP74, Laravel8 |
+| Database | MySQL           |
+| Web Server | Apache          |
+| Development Environment | Windows         |
+| Mail | Gmail SMTP      |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 변경된 기술 스택
+| 구분 | 기술                          |
+| --- |-----------------------------|
+| Backend | PHP84, Laravel12            |
+| Web Server | Nginx, PHP-FPM              |
+| Development Environment | WSL, Docker, Docker Compose |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 원격 저장소
+**Docker Setup Repository:** [github.com/wderfer6790/docker_setup](https://github.com/wderfer6790/docker_setup)    
+**Repository:** [github.com/wderfer6790/board_by_laravel](https://github.com/wderfer6790/board_by_laravel)
 
-## Learning Laravel
+## 구현 화면
+1. 게시글 목록(로그인 전/후)    
+   ![게시글 목록 로그인 전](https://raw.githubusercontent.com/wderfer6790/board_by_laravel/refs/heads/master/storage/app/public/image/readme/list_no_login.png)           
+   ![게시글 목록 로그인 후](https://raw.githubusercontent.com/wderfer6790/board_by_laravel/refs/heads/master/storage/app/public/image/readme/list_login.png)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+2. 회원가입    
+   ![회원가입 입력란](https://raw.githubusercontent.com/wderfer6790/board_by_laravel/refs/heads/master/storage/app/public/image/readme/sign_form.png)
+3. 회원가입 이메일 인증    
+   ![회원가입 인증 이메일](https://raw.githubusercontent.com/wderfer6790/board_by_laravel/refs/heads/master/storage/app/public/image/readme/sign_verify_mail.png)           
+   ![회원가입 인증 이메일 확인](https://raw.githubusercontent.com/wderfer6790/board_by_laravel/refs/heads/master/storage/app/public/image/readme/sign_verify_mail_checked.png)
+4. 프로필    
+   ![프로필](https://raw.githubusercontent.com/wderfer6790/board_by_laravel/refs/heads/master/storage/app/public/image/readme/profile_form.png)
+5. 게시글 작성    
+   ![게시글 작성1](https://raw.githubusercontent.com/wderfer6790/board_by_laravel/refs/heads/master/storage/app/public/image/readme/article_editor.png)        
+   ![게시글 작성2](https://raw.githubusercontent.com/wderfer6790/board_by_laravel/refs/heads/master/storage/app/public/image/readme/article_editor2.png)
+6. 게시글    
+   ![게시글](https://raw.githubusercontent.com/wderfer6790/board_by_laravel/refs/heads/master/storage/app/public/image/readme/article.png)        
+   ![게시글 댓글](https://raw.githubusercontent.com/wderfer6790/board_by_laravel/refs/heads/master/storage/app/public/image/readme/article_reply.png)
+7. 패스워드 초기화    
+   ![패스워드 초기화](https://raw.githubusercontent.com/wderfer6790/board_by_laravel/refs/heads/master/storage/app/public/image/readme/password_reset.png)
+8. 패스트워 초기화 이메일 인증    
+   ![패스워드 초기화 이메일](https://raw.githubusercontent.com/wderfer6790/board_by_laravel/refs/heads/master/storage/app/public/image/readme/password_reset_verify_mail.png)
+   ![패스워드 초기화 이메일 확인 후 재설정](https://raw.githubusercontent.com/wderfer6790/board_by_laravel/refs/heads/master/storage/app/public/image/readme/password_reset_verify_mail_checked.png)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
